@@ -19,14 +19,20 @@ class Home extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.load.spritesheet("pc", "../assets/pc/pc_spritesheet.png", { frameWidth: 50, frameHeight: 100, spacing: 2, });
         this.load.image("bg", "../assets/tiles/flat.png");
+        this.load.image("tv", "../assets/tiles/tv.png");
+        this.load.image("outsideA", "../assets/tiles/outsideA.png");
+        this.load.image("outsideB", "../assets/tiles/outsideB.png");
+        this.load.audio("home", "../assets/sounds/home.wav"); // https://beepbox.co/#8n31s0k0l00e03t2-m0a7g0fj07i0r1o3210T0v1L4u00q1d3f5y3z1C0w8c1h0T5v4L4u05q1d7f2y6z1C0c0h4HU70U0000000000T0v1L4u10q0d0f8y0z1C2w2c0h0T4v1L4uf0q1z6666ji8k8k3jSBKSJJAArriiiiii07JCABrzrrrrrrr00YrkqHrsrrrrjr005zrAqzrjzrrqr1jRjrqGGrrzsrsA099ijrABJJJIAzrrtirqrqjqixzsrAjrqjiqaqqysttAJqjikikrizrHtBJJAzArzrIsRCITKSS099ijrAJS____Qg99habbCAYrDzh00b4zg00000000h4g000000018i000000004x800000000p23LKrnW3qU7CFPn-1K3rHuZHZ7JacVC_9TJldtWj5pHfGBIRnpAKSBjbdoIHmi2_ZnJ5T_1ydJKZlLkZSa1IMnfWfRei0GqfNYOFH_jF4EHjh_bXpi9jk-DTCKFWWf8aoWCnQZJqNROZsLioXnbUZjyc0yDnbJRaqDN_iFE-Lnk4wHjh-fyG0KqcX0CqcHIA72fa18WqjhCplpeph7le0kRszyfpTtPaWyfc8WifpMzFEzFD90
         dbglog("preloaded home scene");
     }
 
     create() {
+        this.sound.play("home", { loop: true });
+
         // Instantiate world
         var bg = this.add.image(game.config.width / 2, game.config.height / 2, 'bg');
         var topLeft = bg.getTopLeft();
-        this.physics.world.setBounds(topLeft.x+(T/2), topLeft.y, bg.width-T, bg.height);
+        this.physics.world.setBounds(topLeft.x + (T / 2), topLeft.y, bg.width - T, bg.height);
         this.bg = bg;
 
         // Instantiate Player Character
@@ -38,7 +44,6 @@ class Home extends Phaser.Scene {
         pc.setCollideWorldBounds(true);
         this.pc = pc;
 
-
         // Sort out Camera and World Bounds
         var cam = this.cameras.main;
         cam.setBounds(topLeft.x, topLeft.y, bg.width, bg.height);
@@ -46,6 +51,19 @@ class Home extends Phaser.Scene {
         cam.setZoom(3);
         cam.fadeIn();
         this.cam = cam;
+
+        // Fore- and Background parallax
+        var tv = this.add.image(450, 350, 'tv');
+        tv.setScale(2);
+        tv.setScrollFactor(1.25);
+        
+        var outsideA = this.add.image(250, 260, 'outsideA');
+        outsideA.setDepth(-1);
+        outsideA.setScrollFactor(0.9);
+
+        var outsideB = this.add.image(500, 260, 'outsideB');
+        outsideB.setDepth(-1);
+        outsideB.setScrollFactor(0.85);
 
         // Instantiate Animations
         this.anims.create({
