@@ -27,7 +27,8 @@ class Home extends Phaser.Scene {
     }
 
     create() {
-        this.sound.play("home", { loop: true });
+        var music = this.sound.add("home", { loop: true });
+        music.play();
 
         // Instantiate world
         var bg = this.add.image(game.config.width / 2, game.config.height / 2, 'bg');
@@ -36,7 +37,7 @@ class Home extends Phaser.Scene {
         this.bg = bg;
 
         // Instantiate Player Character
-        var pc = this.physics.add.sprite(200, 300, "pc", 0);
+        var pc = this.physics.add.sprite(20, 300, "pc", 0);
         pc.isMoving = function() {
             let vel = this.body.velocity;
             return Boolean(vel.x || vel.y);
@@ -56,7 +57,7 @@ class Home extends Phaser.Scene {
         var tv = this.add.image(450, 350, 'tv');
         tv.setScale(2);
         tv.setScrollFactor(1.25);
-        
+
         var outsideA = this.add.image(250, 260, 'outsideA');
         outsideA.setDepth(-1);
         outsideA.setScrollFactor(0.9);
@@ -113,5 +114,8 @@ class Home extends Phaser.Scene {
         } else {
             pc.body.setVelocity(0);
         }
+
+        // Ensure sound is on
+        this.sound.resumeAll();
     }
 }
