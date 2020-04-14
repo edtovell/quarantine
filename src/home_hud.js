@@ -12,6 +12,7 @@ class HomeHUD extends Phaser.Scene {
     create() {
         var cam = this.cameras.main;
         cam.roundPixels = true;
+        cam.fadeIn();
 
         var moodText = this.add.bitmapText(cam.midPoint.x, 10, 'pixeled', 'mood', 20);
         this.moodText = moodText;
