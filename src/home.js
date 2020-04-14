@@ -50,6 +50,7 @@ class Home extends Phaser.Scene {
         cam.setBounds(topLeft.x, topLeft.y, bg.width, bg.height);
         cam.startFollow(pc);
         cam.setZoom(3);
+        cam.roundPixels = true;
         cam.fadeIn();
         this.cam = cam;
 
@@ -65,6 +66,9 @@ class Home extends Phaser.Scene {
         var outsideB = this.add.image(500, 260, 'outsideB');
         outsideB.setDepth(-1);
         outsideB.setScrollFactor(0.85);
+
+        // Instantiate HUD
+        this.hud = this.scene.launch("home_hud");
 
         // Instantiate Animations
         this.anims.create({
