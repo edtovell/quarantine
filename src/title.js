@@ -57,6 +57,7 @@ class Title extends Phaser.Scene {
     }
 
     update() {
+        // Space to start - tween to fade music out
         if (this.cursors.space._justDown) {
             this.tweens.add({
                 targets: this.titleMusic,

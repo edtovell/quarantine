@@ -47,4 +47,32 @@ class HomeHUD extends Phaser.Scene {
         this.moodBar.fillRect(...drawArgs);
     }
 
+    getToolTip(x) {
+        // get a hint when near interactable objects
+        var interactables = [
+            {lower: 220, higher: 290, text: "space to use computer"},
+            {lower: 350, higher: 445, text: "space to watch TV"},
+            {lower: 580, higher: 640, text: "space to read a book"},
+            {lower: 660, higher: 700, text: "space to go out"},
+        ];
+        var obj;
+        for (obj of interactables) {
+            if(x>obj.lower && x<obj.higher) {
+                return obj.text;
+            }
+        }
+        return "";
+    }
+
+    drawToolTip(x) {
+        // show the hint when near interactable objects
+        var cam = this.cameras.main;
+        if (this.toolTip === undefined) {
+            this.toolTip = this.add.bitmapText(0, 0, 'pixeled', '', 20);
+            this.toolTip.setPosition(cam.midPoint.x, cam.displayHeight - 35);
+        }
+        var text = this.getToolTip(x);
+        this.toolTip.setText(text);
+        this.toolTip.setX(cam.midPoint.x - (this.toolTip.width / 2));
+    }
 }

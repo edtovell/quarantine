@@ -16,13 +16,14 @@ class Home extends Phaser.Scene {
     }
 
     preload() {
-        var cam = this.cameras.main;
+        // Loading Bar
+        var midPoint = this.cameras.main.midPoint;
         var loadingBar = this.add.graphics();
         this.load.on("progress", function(val) {
             dbglog(val);
             loadingBar.clear();
             loadingBar.fillStyle(BLUE);
-            loadingBar.fillRect(cam.midPoint.x - 200, cam.midPoint.y - 5, 400 * val, 10);
+            loadingBar.fillRect(midPoint.x - 200, midPoint.y - 5, 400 * val, 10);
         })
         this.load.on("complete", function() {
             loadingBar.clear();
@@ -81,7 +82,8 @@ class Home extends Phaser.Scene {
         outsideB.setScrollFactor(0.85);
 
         // Instantiate HUD
-        this.hud = this.scene.launch("home_hud");
+        this.scene.launch("home_hud");
+        this.hud = this.scene.get("home_hud");
 
         // Instantiate Animations
         this.anims.create({
@@ -107,7 +109,6 @@ class Home extends Phaser.Scene {
         });
 
         dbglog("created home scene");
-
     }
 
     update() {
@@ -138,6 +139,18 @@ class Home extends Phaser.Scene {
             pc.body.setVelocityX(-PC_WALK_SPEED);
         } else {
             pc.body.setVelocity(0);
+        }
+
+        // Draw tooltip based on pc's Xposition
+        this.hud.drawToolTip(pc.body.x);
+
+        if (game.config.physics.arcade.debug) {
+            // show pc's X position
+            if (this.pcX===undefined) {
+                this.pcX = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y-80, 'X: ', {fontFamily: "Arial", fontSize: 10, color: BLUE});
+            }
+            this.pcX.setText("X: " + pc.body.x);
+            this.pcX.setX(this.cam.midPoint.x);
         }
     }
 }
