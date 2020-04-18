@@ -30,6 +30,7 @@ class Home extends Phaser.Scene {
         })
 
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.load.spritesheet("pc", "./assets/pc/pc_spritesheet.png", { frameWidth: 50, frameHeight: 100, spacing: 2, });
         this.load.image("bg", "./assets/tiles/flat.png");
         this.load.image("tv", "./assets/tiles/tv.png");
@@ -143,6 +144,10 @@ class Home extends Phaser.Scene {
 
         // Get nearby item and draw tooltip based on pc's X position
         var obj = this.hud.drawToolTip(pc.body.x);
+
+        if(obj && Phaser.Input.Keyboard.JustDown(this.spacebar)){
+            this.hud.drawMoodBar(+2);
+        }
 
         if (game.config.physics.arcade.debug) {
             // show pc's X position

@@ -1,70 +1,143 @@
 {
     "computer":
     {
-        "text": "What are you going to do on the computer?",
-        "choice":
+        "title": "What are you going to do on the computer?",
+        "options":
         {
             "Skype Mum":
             {
-                
+                "response": "",
+                "points": 0
             },
             "Play a game":
-            {},
+            {
+                "response": "You find a strange browser game about the pandemic, called 'Lockdown!' or 'Isolation!' or something. There is a self-referential minigame within it, and the minigame has a sort of meta-game inside it, and so on. You manage to pass three hours in serially-embedded indifference.",
+                "time": 3
+
+            },
             "Look for a new job":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "Watch YouTube":
-            {},
-            "Masturbate":
-            {}
+            {
+                "response": "",
+                "points": 0
+
+            },
+            "Watch porn":
+            {
+                "response": "",
+                "points": 0
+
+            }
         }
     },
     "TV":
     {
-        "text": "What are you going to watch?",
-        "choice":
+        "title": "What are you going to watch?",
+        "options":
         {
             "28 Days Later":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "Tiger King":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "BBC News":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "A 'Louis Theroux's Weird Weekeends' rerun":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "Groundhog Day":
-            {}
+            {
+                "response": "",
+                "points": 0
+
+            }
         }
     },
     "book":
     {
-        "text": "What are you going to read?",
-        "choice":
+        "title": "What are you going to read?",
+        "options":
         {
             "'My Booky-Wook' by Russell Brand":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "'Where the Wild Things Are' by Maurice Sendak":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "'Can I Say: Living Large, Cheating Death, and Drums Drums Drums' by Travis Barker":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "'Angels and Demons' by Dan Brown":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "'The Plague' by Albert Camus":
-            {}
+            {
+                "response": "",
+                "points": 0
+
+            }
         }
     },
     "out":
     {
-        "text": "Where do you want to go?",
-        "choice":
+        "title": "Where do you want to go?",
+        "options":
         {
             "Buy Food":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "Exercise":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "Clap for the NHS":
-            {},
+            {
+                "response": "",
+                "points": 0
+
+            },
             "Visit Mum":
-            {}
+            {
+                "response": "",
+                "points": 0
+
+            }
         }
     }
 }

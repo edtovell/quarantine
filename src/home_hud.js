@@ -8,7 +8,6 @@ class HomeHUD extends Phaser.Scene {
     preload() {
         // load custom font
         this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
-        this.load.json('interactions', './src/interactions.json');
         this.moodValMax = 300;
         this.moodVal = this.moodValMax;
         this.hoursPassed = 0;
