@@ -35,7 +35,8 @@ class Title extends Phaser.Scene {
         music.play();
         this.titleMusic = music;
 
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.controlsEnabled = true;
 
         var cam = this.cam;
 
@@ -57,15 +58,18 @@ class Title extends Phaser.Scene {
     }
 
     update() {
-        // Space to start - tween to fade music out
-        if (this.cursors.space._justDown) {
-            this.tweens.add({
-                targets: this.titleMusic,
-                volume: 0,
-                duration: 1000,
-                onComplete: () => {this.titleMusic.stop()},
-            })
-            this.cam.fadeOut();
+        if(this.controlsEnabled){
+            // Space to start - tween to fade music out
+            if (this.spacebar._justDown) {
+                this.tweens.add({
+                    targets: this.titleMusic,
+                    volume: 0,
+                    duration: 1000,
+                    onComplete: () => {this.titleMusic.stop()},
+                })
+                this.cam.fadeOut();
+                this.controlsEnabled = false;
+            }
         }
     }
 }

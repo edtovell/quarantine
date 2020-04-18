@@ -141,15 +141,15 @@ class Home extends Phaser.Scene {
             pc.body.setVelocity(0);
         }
 
-        // Draw tooltip based on pc's Xposition
-        this.hud.drawToolTip(pc.body.x);
+        // Get nearby item and draw tooltip based on pc's X position
+        var obj = this.hud.drawToolTip(pc.body.x);
 
         if (game.config.physics.arcade.debug) {
             // show pc's X position
             if (this.pcX===undefined) {
-                this.pcX = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y-80, 'X: ', {fontFamily: "Arial", fontSize: 10, color: BLUE});
+                this.pcX = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y-80, 'X: ', {fontFamily: "Arial", fontSize: 8, color: BLUE});
             }
-            this.pcX.setText("X: " + pc.body.x);
+            this.pcX.setText("X: " + pc.body.x + "\nobj: " + obj);
             this.pcX.setX(this.cam.midPoint.x);
         }
     }

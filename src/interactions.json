@@ -1,0 +1,70 @@
+{
+    "computer":
+    {
+        "text": "What are you going to do on the computer?",
+        "choice":
+        {
+            "Skype Mum":
+            {
+                
+            },
+            "Play a game":
+            {},
+            "Look for a new job":
+            {},
+            "Watch YouTube":
+            {},
+            "Masturbate":
+            {}
+        }
+    },
+    "TV":
+    {
+        "text": "What are you going to watch?",
+        "choice":
+        {
+            "28 Days Later":
+            {},
+            "Tiger King":
+            {},
+            "BBC News":
+            {},
+            "A 'Louis Theroux's Weird Weekeends' rerun":
+            {},
+            "Groundhog Day":
+            {}
+        }
+    },
+    "book":
+    {
+        "text": "What are you going to read?",
+        "choice":
+        {
+            "'My Booky-Wook' by Russell Brand":
+            {},
+            "'Where the Wild Things Are' by Maurice Sendak":
+            {},
+            "'Can I Say: Living Large, Cheating Death, and Drums Drums Drums' by Travis Barker":
+            {},
+            "'Angels and Demons' by Dan Brown":
+            {},
+            "'The Plague' by Albert Camus":
+            {}
+        }
+    },
+    "out":
+    {
+        "text": "Where do you want to go?",
+        "choice":
+        {
+            "Buy Food":
+            {},
+            "Exercise":
+            {},
+            "Clap for the NHS":
+            {},
+            "Visit Mum":
+            {}
+        }
+    }
+}

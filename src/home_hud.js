@@ -1,4 +1,6 @@
 class HomeHUD extends Phaser.Scene {
+    // Calculates and draws the heads-up display
+
     constructor() {
         super({ key: "home_hud" });
     }
@@ -6,7 +8,10 @@ class HomeHUD extends Phaser.Scene {
     preload() {
         // load custom font
         this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
-        this.moodVal = 300;
+        this.load.json('interactions', './src/interactions.json');
+        this.moodValMax = 300;
+        this.moodVal = this.moodValMax;
+        this.hoursPassed = 0;
     }
 
     create() {
@@ -17,48 +22,105 @@ class HomeHUD extends Phaser.Scene {
         var moodText = this.add.bitmapText(cam.midPoint.x, 10, 'pixeled', 'mood', 20);
         this.moodText = moodText;
 
-        this.drawMoodBar(this.moodVal);
+        this.drawMoodBar(0);
+        this.drawTimePassed();
+
+        // Increase time passed
+        this.time.addEvent({
+            callback: () => { this.hoursPassed += 1 },
+            callbackScope: this,
+            delay: 5000,
+            loop: true,
+        });
+
+        // Decrease mood
+        this.time.addEvent({
+            callback: () => { this.drawMoodBar(-1) },
+            callbackScope: this,
+            delay: 400,
+            loop: true,
+        });
     }
 
     update() {
-        this.moodVal -= 0.1;
-        this.drawMoodBar(this.moodVal);
+        this.drawMoodBar(0);
+        this.drawTimePassed();
     }
 
-    drawMoodBar(val) {
+    drawMoodBar(diff) {
+        if (diff) {
+            // only count the diff up to the max, or down to 0
+            if (this.moodVal + diff < 0) {
+                diff = this.moodVal;
+            } else if (this.moodVal + diff > this.moodValMax) {
+                diff = this.moodValMax - this.moodVal;
+            }
+        }
+
         var drawArgs = [
             this.moodText.x + this.moodText.width + 8, // x
             18, // y
-            300, // width
+            this.moodValMax, // width
             20 // height
         ];
         if (this.moodBarContainer === undefined) {
+            // draw the container
             this.moodBarContainer = this.add.graphics();
             this.moodBarContainer.lineStyle(1, "0x000000");
             this.moodBarContainer.strokeRect(...drawArgs)
         }
+
+        // draw the moodbar
         if (this.moodBar === undefined) {
             this.moodBar = this.add.graphics();
         }
 
-        drawArgs[2] = (val >= 0) ? val : 0;
+        drawArgs[2] = this.moodVal + diff;
         this.moodBar.clear();
         this.moodBar.fillStyle("0x00BFFF");
         this.moodBar.fillRect(...drawArgs);
+
+        // if there is a diff, draw it
+        if (diff) {
+            var moodBarDiff = this.add.graphics();
+            drawArgs[0] = drawArgs[0] + this.moodVal;
+            drawArgs[2] = diff;
+            moodBarDiff.fillStyle((diff > 0) ? "0x32CD32" : "0xDC143C") // green if positive, else red
+            moodBarDiff.fillRect(...drawArgs);
+
+            // then destroy it
+            this.time.addEvent({
+                callback: () => { moodBarDiff.clear() },
+                callbackScope: this,
+                delay: 300,
+            });
+
+            // change moodBarVal accordingly
+            this.moodVal += diff;
+        }
+    }
+
+    drawTimePassed() {
+        if (this.timePassedTextObj === undefined) {
+            this.timePassedTextObj = this.add.bitmapText(10, 10, 'pixeled', '', 20);
+        }
+        var days = Math.trunc(this.hoursPassed / 24).toString().padStart(2, "0");
+        var hours = (this.hoursPassed % 24).toString().padStart(2, "0");
+        this.timePassedTextObj.setText(days + " days, " + hours + " hrs");
     }
 
     getToolTip(x) {
         // get a hint when near interactable objects
         var interactables = [
-            {lower: 220, higher: 290, text: "space to use computer"},
-            {lower: 350, higher: 445, text: "space to watch TV"},
-            {lower: 580, higher: 640, text: "space to read a book"},
-            {lower: 660, higher: 700, text: "space to go out"},
+            { lower: 220, higher: 290, text: "space to use computer", key: "computer" },
+            { lower: 350, higher: 450, text: "space to watch TV", key: "TV" },
+            { lower: 570, higher: 640, text: "space to read a book", key: "book" },
+            { lower: 645, higher: 700, text: "space to go out", key: "out" },
         ];
         var obj;
         for (obj of interactables) {
-            if(x>obj.lower && x<obj.higher) {
-                return obj.text;
+            if (x > obj.lower && x < obj.higher) {
+                return obj;
             }
         }
         return "";
@@ -71,8 +133,9 @@ class HomeHUD extends Phaser.Scene {
             this.toolTip = this.add.bitmapText(0, 0, 'pixeled', '', 20);
             this.toolTip.setPosition(cam.midPoint.x, cam.displayHeight - 35);
         }
-        var text = this.getToolTip(x);
-        this.toolTip.setText(text);
+        var obj = this.getToolTip(x);
+        this.toolTip.setText(obj.text);
         this.toolTip.setX(cam.midPoint.x - (this.toolTip.width / 2));
+        return obj.key;
     }
 }
