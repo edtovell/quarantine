@@ -82,9 +82,13 @@ class Home extends Phaser.Scene {
         outsideB.setDepth(-1);
         outsideB.setScrollFactor(0.85);
 
-        // Instantiate HUD
+        // Instantiate HUD and Interactions scenes
         this.scene.launch("home_hud");
         this.hud = this.scene.get("home_hud");
+        
+        this.scene.launch("interaction");
+        this.interaction = this.scene.get("interaction");
+        this.interaction.scene.setActive(false);
 
         // Instantiate Animations
         this.anims.create({
@@ -145,10 +149,12 @@ class Home extends Phaser.Scene {
         // Get nearby item and draw tooltip based on pc's X position
         var obj = this.hud.drawToolTip(pc.body.x);
 
+        // Interact
         if(obj && Phaser.Input.Keyboard.JustDown(this.spacebar)){
-            this.hud.drawMoodBar(+2);
+            this.interaction.enterInteraction(obj);
         }
 
+        // debug
         if (game.config.physics.arcade.debug) {
             // show pc's X position
             if (this.pcX===undefined) {
