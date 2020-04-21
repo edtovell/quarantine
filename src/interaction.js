@@ -19,36 +19,113 @@ class Interaction extends Phaser.Scene {
         this.hud = this.scene.get("home_hud");
         this.cam = this.cameras.main;
         this.textData = this.cache.json.get('interactions');
+        this.scene.setActive(false);
+        this.scene.setVisible(false);
 
-        // declare a variable for the interaction box
-        this.interactionBox;
-        this.choiceColor = "0xFF6347"
+        // declare variables for the interaction box
+        this.interactionBox = {
+            box: undefined,
+            titleText: undefined,
+            bodyText: undefined,
+            optionTexts: []
+        };
+
+        this.choice = 0;
+        this.nChoices = 0;
+        this.choiceColor = "0xFF6347";
+        this.userSelection;
     }
 
     update() {
-        if (this.obj) {
-            var nChoices = Object.keys(this.textData[this.obj].options).length;
-            if (this.interactionBox === undefined) {
-                this.interactionBox = this.drawInteractionBox(
-                    this.textData[this.obj].title,
-                    Object.keys(this.textData[this.obj].options),
+        if (this.objData) {
+            if (this.interactionBox.box === undefined) {
+                this.drawInteractionBox(
+                    this.objData.title,
+                    null,
+                    Object.keys(this.objData.options),
                     this.choice,
                 );
             } else if (Phaser.Input.Keyboard.JustDown(this.upKey)) {
-                this.choice--;
-                this.interactionBox.optionTexts.forEach((option) => { option.clearTint() });
-                this.interactionBox.optionTexts[this.choice % nChoices].setTint(this.choiceColor);
+                this.moveUpList();
             } else if (Phaser.Input.Keyboard.JustDown(this.downKey)) {
-                this.choice++;
-                this.interactionBox.optionTexts.forEach((option) => { option.clearTint() });
-                this.interactionBox.optionTexts[this.choice % nChoices].setTint(this.choiceColor);
+                this.moveDownList();
             } else if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-                this.exitInteraction();
+                if (this.nChoices) {
+                    this.userSelection = this.objData.options[Object.keys(this.objData.options)[this.choice]];
+                    this.drawInteractionBox(
+                        null,
+                        this.userSelection.response,
+                        null,
+                        null,
+                    );
+                } else if (this.userSelection) {
+
+                    this.applyResults();
+
+                    if (["exit", undefined].includes(this.userSelection.next)){
+                        this.setInteractionObj(null);
+                        this.exitInteraction();
+
+                    } else if (this.userSelection.next) {
+                        this.setInteractionObj(this.obj, this.userSelection.next);
+                        this.clearInteractionBox();
+                    } else {
+                        // emergency! don't know what happened!
+                        this.exitInteraction();
+                    }
+                }
             }
+        }
+
+        // debug
+        if (game.config.physics.arcade.debug) {
+            if (this.debugText === undefined) {
+                this.debugText = this.add.text(
+                    this.cam.midPoint.x,
+                    this.cam.midPoint.y + 10,
+                    '',
+                    { fontFamily: "Arial", fontSize: 16, color: "#fff", stroke: "#000" }
+                );
+            }
+            var next = ( this.objData===undefined ? undefined : this.objData.next);
+            var title = ( this.objData===undefined ? undefined : this.objData.title);
+            this.debugText.setText(
+                "this.obj: " + this.obj +
+                "\nthis.choice: " + this.choice +
+                "\nthis.nChoices: " + this.nChoices +
+                "\nthis.objData: " + this.objData +
+                "\nthis.userSelection: " + this.userSelection
+            );
+            this.debugText.setDepth(5);
         }
     }
 
-    drawInteractionBox(title, options, choice) {
+    moveUpList() {
+        if (this.nChoices) {
+            this.choice--;
+            if (this.choice < 0) {
+                this.choice = this.nChoices - 1;
+            }
+
+            this.interactionBox.optionTexts.forEach((option) => { option.clearTint() });
+            this.interactionBox.optionTexts[this.choice].setTint(this.choiceColor);
+        }
+    }
+
+    moveDownList() {
+        if (this.nChoices) {
+            this.choice++;
+            if (this.choice >= this.nChoices) {
+                this.choice = 0;
+            }
+            this.interactionBox.optionTexts.forEach((option) => { option.clearTint() });
+            this.interactionBox.optionTexts[this.choice].setTint(this.choiceColor);
+        }
+    }
+
+    drawInteractionBox(title, body, options, choice) {
+
+        this.clearInteractionBox();
 
         var cam = this.cam;
         var box = this.add.graphics();
@@ -65,37 +142,90 @@ class Interaction extends Phaser.Scene {
 
         var x = 80;
         var y = 70;
-
-        var titleText = this.add.text(x - 10, y, title, { fontFamily: "Courier", fontSize: 26 });
-        titleText.setWordWrapWidth(560);
-        y += titleText.displayHeight;
-
+        var titleText;
+        var bodyText;
         var optionTexts = new Array();
-        options.forEach((option) => {
+
+        if (title) {
+            titleText = this.add.text(x - 10, y, title, { fontFamily: "Courier", fontSize: 28 });
+            titleText.setWordWrapWidth(560);
+            y += titleText.displayHeight;
+        } else {
+            titleText = undefined;
+        }
+
+        if (body) {
             y += 10;
-            var newOption = this.add.text(x, y, option, { fontFamily: "Courier", fontSize: 20 });
-            newOption.setWordWrapWidth(540);
-            y += newOption.displayHeight;
-            optionTexts = optionTexts.concat(newOption);
-        });
-        optionTexts[choice].setTint(this.choiceColor);
-        return { box: box, titleText: titleText, optionTexts: optionTexts }
+            bodyText = this.add.text(x, y, body, { fontFamily: "Courier", fontSize: 22 });
+            bodyText.setWordWrapWidth(540);
+            y += bodyText.displayHeight;
+        } else {
+            bodyText = undefined;
+        }
+
+        if (options) {
+            this.nChoices = options.length;
+            options.forEach((option) => {
+                y += 10;
+                var newOption = this.add.text(x, y, option, { fontFamily: "Courier", fontSize: 22 });
+                newOption.setWordWrapWidth(540);
+                y += newOption.displayHeight;
+                optionTexts = optionTexts.concat(newOption);
+            });
+            optionTexts[choice].setTint(this.choiceColor);
+        } else {
+            optionTexts = [];
+            this.nChoices = 0;
+        }
+
+        this.interactionBox = { box: box, titleText: titleText, bodyText: bodyText, optionTexts: optionTexts };
     }
 
-    enterInteraction(obj) {
+    clearInteractionBox() {
+        if (this.interactionBox.box) {
+            this.interactionBox.box.clear();
+            this.interactionBox.box = undefined;
+        }
+        if (this.interactionBox.titleText) {
+            this.interactionBox.titleText.destroy();
+            this.interactionBox.titleText = undefined;
+        }
+        if (this.interactionBox.bodyText) {
+            this.interactionBox.bodyText.destroy();
+            this.interactionBox.bodyText = undefined;
+        }
+        if (this.interactionBox.optionTexts.length) {
+            this.interactionBox.optionTexts.forEach((option) => { option.destroy() });
+            this.interactionBox.optionTexts = new Array();
+        }
+    }
+
+    setInteractionObj(obj, objData) {
+        this.obj = obj;
+        if (objData) {
+            this.objData = objData;
+        } else {
+            this.objData = this.textData[this.obj];
+        }
+
+        if (this.objData && this.objData.options) {
+            this.nChoices = Object.keys(this.objData.options).length;
+        } else {
+            this.nChoices = 0;
+        }
+    }
+
+    enterInteraction() {
         this.home.scene.setActive(false);
         this.scene.setVisible(true);
         this.scene.setActive(true);
         this.choice = 0;
-        this.obj = obj;
     }
 
     exitInteraction() {
-        this.interactionBox.box.clear();
-        this.interactionBox.titleText.destroy();
-        this.interactionBox.optionTexts.forEach((option) => { option.destroy() });
-        this.interactionBox = undefined;
+        this.clearInteractionBox();
         this.home.scene.setActive(true);
+        this.home.setControlsActive(true);
         this.scene.setVisible(false);
         this.scene.setActive(false);
     }
@@ -105,5 +235,14 @@ class Interaction extends Phaser.Scene {
             "time": this.hud.hoursPassed,
             "key": key,
         });
+    }
+
+    applyResults() {
+        if (this.userSelection.points){
+            this.hud.drawMoodBar(this.userSelection.points);
+        }
+        if (this.userSelection.time){
+            this.hud.hoursPassed += this.userSelection.time;
+        }
     }
 }

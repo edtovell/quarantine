@@ -6,32 +6,36 @@
         {
             "Skype Mum":
             {
-                "response": "",
-                "points": 0
+                "response": "You are on the call for almost two hours. Summary: she's fine.",
+                "points": 2,
+                "time": 2,
+                "next": "exit"
             },
             "Play a game":
             {
                 "response": "You find a strange browser game about the pandemic, called 'Lockdown!' or 'Isolation!' or something. There is a self-referential minigame within it, and the minigame has a sort of meta-game inside it, and so on. You manage to pass three hours in serially-embedded indifference.",
-                "time": 3
-
+                "time": 3,
+                "next": "exit"
             },
             "Look for a new job":
             {
-                "response": "",
-                "points": 0
-
+                "response": "You can just about hack the misery of jobhunting for about an hour before a wave of self-loathing hits you.",
+                "points": -8,
+                "time": 1,
+                "next": "exit"
             },
             "Watch YouTube":
             {
-                "response": "",
-                "points": 0
-
+                "response": "Luckily you have spent years training YouTube's algorithm to only serve you high-quality videos of cats and dogs that are friends. You forget your troubles and spend four hours in a state of unmitigated joy.",
+                "points": 300,
+                "time": 4,
+                "next": "exit"
             },
-            "Watch porn":
+            "Masturbate to incest porn":
             {
-                "response": "",
-                "points": 0
-
+                "response": "You manage to bring things to a close almost immediately, which makes you feel incredible for about one second. After that it's basically horror and shame.",
+                "points": -5,
+                "next": "exit"
             }
         }
     },
@@ -42,33 +46,41 @@
         {
             "28 Days Later":
             {
-                "response": "",
-                "points": 0
+                "response": "It's pretty good! You wouldn't have thought this would be a good time for apocalyptic horror, but it kinda is!",
+                "time": 3,
+                "points": 15,
+                "next": "exit"
 
             },
             "Tiger King":
             {
-                "response": "",
-                "points": 0
+                "response": "You feel a lot better about yourself and your place in the world in comparison to these eccentric animal folk, and you finally understand all the Carole Fuckin' Baskin memes.",
+                "points": 10,
+                "time": 8,
+                "next": "exit"
 
             },
             "BBC News":
             {
-                "response": "",
-                "points": 0
+                "response": "During the daily briefing the Cabinet Secretary for Whatever tells you about how great everything is going fighting the pandemic, even though there is no chance that they or you or anyone else believes anything they're saying for even a moment.",
+                "points": -5,
+                "time": 1,
+                "next": "exit"
 
             },
             "A 'Louis Theroux's Weird Weekeends' rerun":
             {
-                "response": "",
-                "points": 0
-
+                "response": "It's the one with the neo-nazi survivalists, and you yearn for a simpler time when these nutjobs weren't running America.",
+                "points": 1,
+                "time": 1,
+                "next": "exit"
             },
             "Groundhog Day":
             {
-                "response": "",
-                "points": 0
-
+                "response": "Funny, but it's a little on the nose.",
+                "points": 2,
+                "time": 1,
+                "next": "exit"
             }
         }
     },
@@ -128,8 +140,9 @@
             },
             "Clap for the NHS":
             {
-                "response": "",
-                "points": 0
+                "response": "You achieve nothing, but feel like you did.",
+                "points": 5,
+                "next": "exit"
 
             },
             "Visit Mum":

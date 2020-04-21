@@ -113,7 +113,28 @@ class Home extends Phaser.Scene {
             duration: 1000,
         });
 
+        this.userControlsActive = false;
+        this.setControlsActive(true);
+
         dbglog("created home scene");
+    }
+
+    setControlsActive(bool) {
+        // If switching controls on, disallow controls for half a second
+        // to allow for disambiguation from previous button press
+        if (game.config.physics.arcade.debug) {
+            console.log("setting main scene controls active: " + bool);
+        }
+
+        if(bool===true) {
+            this.time.addEvent({
+                callback: () => {this.userControlsActive = true},
+                callbackScope: this,
+                delay: 500,
+            });
+        } else if (bool===false){
+            this.userControlsActive = false;
+        }
     }
 
     update() {
@@ -135,23 +156,28 @@ class Home extends Phaser.Scene {
             }
         }
 
-        // Player Movement Controls
-        if (cursors.left.isDown && cursors.right.isDown) {
-            pc.body.setVelocity(0);
-        } else if (cursors.right.isDown) {
-            pc.body.setVelocityX(PC_WALK_SPEED);
-        } else if (cursors.left.isDown) {
-            pc.body.setVelocityX(-PC_WALK_SPEED);
-        } else {
-            pc.body.setVelocity(0);
-        }
+        if (this.userControlsActive){
 
-        // Get nearby item and draw tooltip based on pc's X position
-        var obj = this.hud.drawToolTip(pc.body.x);
+            // Player Movement Controls
+            if (cursors.left.isDown && cursors.right.isDown) {
+                pc.body.setVelocity(0);
+            } else if (cursors.right.isDown) {
+                pc.body.setVelocityX(PC_WALK_SPEED);
+            } else if (cursors.left.isDown) {
+                pc.body.setVelocityX(-PC_WALK_SPEED);
+            } else {
+                pc.body.setVelocity(0);
+            }
 
-        // Interact
-        if(obj && Phaser.Input.Keyboard.JustDown(this.spacebar)){
-            this.interaction.enterInteraction(obj);
+            // Get nearby item and draw tooltip based on pc's X position
+            var obj = this.hud.drawToolTip(pc.body.x);
+
+            // Interact
+            if(obj && Phaser.Input.Keyboard.JustDown(this.spacebar)){
+                this.setControlsActive(false);
+                this.interaction.setInteractionObj(obj);
+                this.interaction.enterInteraction();
+            }
         }
 
         // debug
@@ -162,6 +188,13 @@ class Home extends Phaser.Scene {
             }
             this.pcX.setText("X: " + pc.body.x + "\nobj: " + obj);
             this.pcX.setX(this.cam.midPoint.x);
+
+            // show if controls are active
+            if (this.pcCanControl===undefined) {
+                this.pcCanControl = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y-60, 'ControlsEnabled: ', {fontFamily: "Arial", fontSize: 8, color: BLUE});
+            }
+            this.pcCanControl.setText('ControlsEnabled: ' + this.userControlsActive)
+            this.pcCanControl.setX(this.cam.midPoint.x);
         }
     }
 }
