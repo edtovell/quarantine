@@ -7,6 +7,7 @@ dbglog = function(text) {
 ANIMS_FRAMERATE = 10;
 PC_WALK_SPEED = 200;
 T = 50; // size of one tile
+MAX_DARKNESS = 0.8; // opacity of a plain black layer mask at midnight (where 0 is midday)
 
 class Home extends Phaser.Scene {
 
@@ -75,17 +76,24 @@ class Home extends Phaser.Scene {
         tv.setScrollFactor(1.25);
 
         var outsideA = this.add.image(250, 260, 'outsideA');
-        outsideA.setDepth(-1);
+        outsideA.setDepth(-2);
         outsideA.setScrollFactor(0.9);
 
         var outsideB = this.add.image(500, 260, 'outsideB');
-        outsideB.setDepth(-1);
+        outsideB.setDepth(-2);
         outsideB.setScrollFactor(0.85);
+
+        // Invisible black layer varies in opacity to simulate nighttime
+        this.darkLayer = this.add.graphics();
+        this.darkLayer.setDepth(-1);
+        this.darkLayer.setAlpha(0);
+        this.darkLayer.fillRect(140, 200, 500, 100);
+        this.hoursPassed = 0; // Probably a good idea to save the hour of the day too
 
         // Instantiate HUD and Interactions scenes
         this.scene.launch("home_hud");
         this.hud = this.scene.get("home_hud");
-        
+
         this.scene.launch("interaction");
         this.interaction = this.scene.get("interaction");
         this.interaction.scene.setActive(false);
@@ -126,13 +134,13 @@ class Home extends Phaser.Scene {
             console.log("setting main scene controls active: " + bool);
         }
 
-        if(bool===true) {
+        if (bool === true) {
             this.time.addEvent({
-                callback: () => {this.userControlsActive = true},
+                callback: () => { this.userControlsActive = true },
                 callbackScope: this,
                 delay: 500,
             });
-        } else if (bool===false){
+        } else if (bool === false) {
             this.userControlsActive = false;
         }
     }
@@ -156,7 +164,7 @@ class Home extends Phaser.Scene {
             }
         }
 
-        if (this.userControlsActive){
+        if (this.userControlsActive) {
 
             // Player Movement Controls
             if (cursors.left.isDown && cursors.right.isDown) {
@@ -173,28 +181,43 @@ class Home extends Phaser.Scene {
             var obj = this.hud.drawToolTip(pc.body.x);
 
             // Interact
-            if(obj && Phaser.Input.Keyboard.JustDown(this.spacebar)){
+            if (obj && Phaser.Input.Keyboard.JustDown(this.spacebar)) {
                 this.setControlsActive(false);
                 this.interaction.setInteractionObj(obj);
                 this.interaction.enterInteraction();
             }
         }
 
+        // If the time changes, update the darkness outside 
+        if (this.hoursPassed != this.hud.hoursPassed) {
+            this.hoursPassed = this.hud.hoursPassed;
+            var hourOfDay = this.hoursPassed % 24;
+            var darknessCoeff = (hourOfDay > 12) ? 24 - hourOfDay : hourOfDay;
+            this.darkLayer.setAlpha(MAX_DARKNESS * (darknessCoeff / 12));
+        }
+
         // debug
         if (game.config.physics.arcade.debug) {
             // show pc's X position
-            if (this.pcX===undefined) {
-                this.pcX = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y-80, 'X: ', {fontFamily: "Arial", fontSize: 8, color: BLUE});
+            if (this.pcX === undefined) {
+                this.pcX = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y - 80, 'X: ', { fontFamily: "Arial", fontSize: 8, color: BLUE });
             }
             this.pcX.setText("X: " + pc.body.x + "\nobj: " + obj);
             this.pcX.setX(this.cam.midPoint.x);
 
             // show if controls are active
-            if (this.pcCanControl===undefined) {
-                this.pcCanControl = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y-60, 'ControlsEnabled: ', {fontFamily: "Arial", fontSize: 8, color: BLUE});
+            if (this.pcCanControl === undefined) {
+                this.pcCanControl = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y - 60, 'ControlsEnabled: ', { fontFamily: "Arial", fontSize: 8, color: BLUE });
             }
             this.pcCanControl.setText('ControlsEnabled: ' + this.userControlsActive)
             this.pcCanControl.setX(this.cam.midPoint.x);
+
+            // show level of darkness outside
+            if (this.darkness === undefined) {
+                this.darkness = this.add.text(this.cam.midPoint.x, this.cam.midPoint.y - 50, 'Darkness: ', { fontFamily: "Arial", fontSize: 8, color: BLUE });
+            }
+            this.darkness.setText('Darkness: ' + this.darkLayer.alpha.toString().slice(0, 4));
+            this.darkness.setX(this.cam.midPoint.x);
         }
     }
 }
