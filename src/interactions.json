@@ -9,33 +9,51 @@
                 "response": "You are on the call for almost two hours. Summary: she's fine.",
                 "points": 2,
                 "time": 2,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 18,
+                "ifNotAllowed": "You probably don't need to call your Mum more than once a day."
             },
             "Play a game":
             {
                 "response": "You find a strange browser game about the pandemic, called 'Lockdown!' or 'Isolation!' or something. There is a self-referential minigame within it, and the minigame has a sort of meta-game inside it, and so on. You manage to pass three hours in serially-embedded indifference.",
                 "time": 3,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 18,
+                "ifNotAllowed": "You've already done that today, you're trying to be -less- bored."
             },
             "Look for a new job":
             {
                 "response": "You can just about hack the misery of jobhunting for about an hour before a wave of self-loathing hits you.",
                 "points": -8,
                 "time": 1,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 48,
+                "ifNotAllowed": "You don't think you can handle doing this more than once every other day."
             },
             "Watch YouTube":
             {
                 "response": "Luckily you have spent years training YouTube's algorithm to only serve you high-quality videos of cats and dogs that are friends. You forget your troubles and spend four hours in a state of unmitigated joy.",
-                "points": 300,
+                "points": 30,
                 "time": 4,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 24,
+                "ifNotAllowed": "There's only so many cat videos. Better give it a while. Maybe there'll be new ones tomorrow."
             },
-            "Masturbate to incest porn":
+            "Find some weird porn":
             {
-                "response": "You manage to bring things to a close almost immediately, which makes you feel incredible for about one second. After that it's basically horror and shame.",
+                "response": "Witnessing such a display of vulgarity makes you feel incredible for about one second. After that it's basically horror and shame.",
                 "points": -5,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 48,
+                "ifNotAllowed": "You still feel pretty harrowed from last time."
+            },
+            "Zoom-bomb the FBI":
+            {
+                "response": "You find it remarkably easy to join a supposedly private video conference with senior officials in US federal law enforcement. They seem angry in a way that suggests this is not the first time it's happened to them today.",
+                "points": 10,
+                "next": "exit",
+                "frequencyAllowed": 76,
+                "ifNotAllowed": "Better not risk it again. You don't want to end up on some kind of watchlist."
             }
         }
     },
@@ -46,10 +64,12 @@
         {
             "28 Days Later":
             {
-                "response": "It's pretty good! You wouldn't have thought this would be a good time for apocalyptic horror, but it kinda is!",
+                "response": "It's pretty good! You wouldn't have thought this would be a good time for apocalyptic horror, but it kinda is! Script is good, direction is good, casting and performances are top notch, and the music in the first act is transcendent. It gets sort of campy and loses something towards the end, but that's ok because it's also uplifting. You feel optimistic about your chances, should things get this bad.",
                 "time": 3,
                 "points": 15,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "Seen it."
 
             },
             "Tiger King":
@@ -57,7 +77,9 @@
                 "response": "You feel a lot better about yourself and your place in the world in comparison to these eccentric animal folk, and you finally understand all the Carole Fuckin' Baskin memes.",
                 "points": 10,
                 "time": 8,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "Seen it."
 
             },
             "BBC News":
@@ -65,22 +87,27 @@
                 "response": "During the daily briefing the Cabinet Secretary for Whatever tells you about how great everything is going fighting the pandemic, even though there is no chance that they or you or anyone else believes anything they're saying for even a moment.",
                 "points": -5,
                 "time": 1,
-                "next": "exit"
-
+                "next": "exit",
+                "frequencyAllowed": 24,
+                "ifNotAllowed": "Nah, there's only so much propaganda you can handle for one day."
             },
             "A 'Louis Theroux's Weird Weekeends' rerun":
             {
-                "response": "It's the one with the neo-nazi survivalists, and you yearn for a simpler time when these nutjobs weren't running America.",
-                "points": 1,
+                "response": "It's the one with the neo-nazi survivalists, and you yearn for a simpler time when these nutjobs weren't running America. But you feel safe knowing that somewhere out there, Louis is still part of our world.",
+                "points": 10,
                 "time": 1,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 168,
+                "ifNotAllowed": "Whoa don't be hasty - good things like Louis must be rationed. Best give it a week between repeat viewings."
             },
             "Groundhog Day":
             {
                 "response": "Funny, but it's a little on the nose.",
                 "points": 2,
                 "time": 1,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "You wonder what might happen if you actually did watch Groundhog Day again. No, it's too many layers for you."
             }
         }
     },
@@ -91,33 +118,50 @@
         {
             "'My Booky-Wook' by Russell Brand":
             {
-                "response": "",
-                "points": 0
+                "response": "It wasn't good.",
+                "points": -5,
+                "time": 1,
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "No, you're not reading it again. Absolutely not."
 
             },
             "'Where the Wild Things Are' by Maurice Sendak":
             {
-                "response": "",
-                "points": 0
+                "response": "It doesn't take any time to finish, but it's still charming and sad, yet uplifting, in a way only beautiful children's books can be.",
+                "points": 10,
+                "next": "exit",
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "Nah, you've already read it."
 
             },
             "'Can I Say: Living Large, Cheating Death, and Drums Drums Drums' by Travis Barker":
             {
-                "response": "",
-                "points": 0
+                "response": "It's actually not bad. You don't feel like you've learned anything or changed at all, but that probably says more about you.",
+                "points": 8,
+                "time": 2,
+                "next": "exit",
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "As basically fine as it was, you don't think you'll really gain anything from a second whack at this."
 
             },
             "'Angels and Demons' by Dan Brown":
             {
-                "response": "",
-                "points": 0
+                "response": "You give it the following review, aping Brown's distinct literary style: \n \n\"The bad book was bad\".",
+                "points": -2,
+                "time": 2,
+                "next": "exit",
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "Dear Christ no."
 
             },
             "'The Plague' by Albert Camus":
             {
-                "response": "",
-                "points": 0
-
+                "response": "Although probably good because it's a 'classic' or whatever, but you just find it incredibly depressing. Actually, why do you have this? I mean, good, you have some actual literature on the bookshelf, but it doesn't really seem like 'you', yaknow?",
+                "points": -5,
+                "time": 4,
+                "next": "exit",
+                "frequencyAllowed": 4800,
+                "ifNotAllowed": "You don't really feel up to having another stab at Camus. You're all Camused out."
             }
         }
     },
@@ -128,28 +172,29 @@
         {
             "Buy Food":
             {
-                "response": "",
-                "points": 0
-
+                "response": "Not ready yet",
+                "frequencyAllowed": 0,
+                "next": "exit"
             },
             "Exercise":
             {
-                "response": "",
-                "points": 0
-
+                "response": "Not ready yet",
+                "frequencyAllowed": 0,
+                "next": "exit"
             },
             "Clap for the NHS":
             {
                 "response": "You achieve nothing, but feel like you did.",
                 "points": 5,
-                "next": "exit"
+                "next": "exit",
+                "frequencyAllowed": 168,
+                "ifNotAllowed": "This only happens once a week, and you'd feel weird doing it when nobody else is."
 
             },
             "Visit Mum":
             {
-                "response": "",
-                "points": 0
-
+                "response": "You're not allowed. You know you're not. Come on man, there's one rule: don't go out.",
+                "next": "exit"
             }
         }
     }

@@ -34,6 +34,7 @@ class Interaction extends Phaser.Scene {
         this.nChoices = 0;
         this.choiceColor = "0xFF6347";
         this.userSelection;
+        this.userSelectionData;
     }
 
     update() {
@@ -51,23 +52,35 @@ class Interaction extends Phaser.Scene {
                 this.moveDownList();
             } else if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
                 if (this.nChoices) {
-                    this.userSelection = this.objData.options[Object.keys(this.objData.options)[this.choice]];
-                    this.drawInteractionBox(
-                        null,
-                        this.userSelection.response,
-                        null,
-                        null,
-                    );
+                    this.userSelection = Object.keys(this.objData.options)[this.choice];
+                    this.userSelectionData = this.objData.options[this.userSelection];
+                    if (this.actionAllowed(this.userSelection, this.userSelectionData.frequencyAllowed)) {
+                        this.drawInteractionBox(
+                            null,
+                            this.userSelectionData.response,
+                            null,
+                            null,
+                        );
+                    } else {
+                        this.drawInteractionBox(
+                            null,
+                            this.userSelectionData.ifNotAllowed,
+                            null,
+                            null,
+                        );
+                    }
                 } else if (this.userSelection) {
+                    if (this.actionAllowed(this.userSelection, this.userSelectionData.frequencyAllowed)) {
+                        this.applyResults();
+                        this.addEventToHistory(this.userSelection);
+                    }
 
-                    this.applyResults();
-
-                    if (["exit", undefined].includes(this.userSelection.next)){
+                    if (["exit", undefined].includes(this.userSelectionData.next)) {
                         this.setInteractionObj(null);
                         this.exitInteraction();
 
                     } else if (this.userSelection.next) {
-                        this.setInteractionObj(this.obj, this.userSelection.next);
+                        this.setInteractionObj(this.obj, this.userSelectionData.next);
                         this.clearInteractionBox();
                     } else {
                         // emergency! don't know what happened!
@@ -83,18 +96,20 @@ class Interaction extends Phaser.Scene {
                 this.debugText = this.add.text(
                     this.cam.midPoint.x,
                     this.cam.midPoint.y + 10,
-                    '',
-                    { fontFamily: "Arial", fontSize: 16, color: "#fff", stroke: "#000" }
+                    '', { fontFamily: "Arial", fontSize: 16, color: "#fff", stroke: "#000" }
                 );
             }
-            var next = ( this.objData===undefined ? undefined : this.objData.next);
-            var title = ( this.objData===undefined ? undefined : this.objData.title);
+            var next = (this.objData === undefined ? undefined : this.objData.next);
+            var title = (this.objData === undefined ? undefined : this.objData.title);
+            var historyString = "\n"
+            this.history.forEach((x) => { historyString += ("  {time:" + x.time + ", key:" + x.key + "}\n") })
             this.debugText.setText(
                 "this.obj: " + this.obj +
                 "\nthis.choice: " + this.choice +
                 "\nthis.nChoices: " + this.nChoices +
                 "\nthis.objData: " + this.objData +
-                "\nthis.userSelection: " + this.userSelection
+                "\nthis.userSelection: " + this.userSelection +
+                "\nthis.history: " + historyString
             );
             this.debugText.setDepth(5);
         }
@@ -238,11 +253,21 @@ class Interaction extends Phaser.Scene {
     }
 
     applyResults() {
-        if (this.userSelection.points){
-            this.hud.drawMoodBar(this.userSelection.points);
+        if (this.userSelectionData.points) {
+            this.hud.drawMoodBar(this.userSelectionData.points);
         }
-        if (this.userSelection.time){
-            this.hud.hoursPassed += this.userSelection.time;
+        if (this.userSelectionData.time) {
+            this.hud.hoursPassed += this.userSelectionData.time;
+            dbglog()
         }
+
+    }
+
+    actionAllowed(key, nHours) {
+        // You can only do actions that you haven't done for a while
+        // This checks whether it's been `nHours`` since you last did `key`
+        var mostRecent = -4800;
+        this.history.forEach((e) => { if (e.key == key) { mostRecent = e.time } });
+        return (this.hud.hoursPassed - mostRecent) > nHours;
     }
 }
