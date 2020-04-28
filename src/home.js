@@ -32,7 +32,7 @@ class Home extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        this.load.spritesheet("pc", "./assets/pc/pc_spritesheet.png", { frameWidth: 50, frameHeight: 100, spacing: 2, });
+        this.load.spritesheet("pc", "./assets/pc/pc_at_home_spritesheet.png", { frameWidth: 50, frameHeight: 100, spacing: 2, });
         this.load.image("bg", "./assets/tiles/flat.png");
         this.load.image("tv", "./assets/tiles/tv.png");
         this.load.image("outsideA", "./assets/tiles/outsideA.png");
