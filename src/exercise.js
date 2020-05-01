@@ -97,7 +97,7 @@ class Exercise extends Phaser.Scene {
         this.nJoggers = 0;
         this.joggers = new Array();
         this.time.addEvent({
-            args: [2],
+            args: [1],
             callback: this.spawnJoggers,
             callbackScope: this,
             delay: 5000,
