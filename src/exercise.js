@@ -74,7 +74,11 @@ class Exercise extends Phaser.Scene {
             loop: -1,
             yoyo: true,
         });
+
         this.aura = aura;
+
+        // pc hitbox mimics aura (because I can't get graphics to collide)
+        pc.setCircle(200/3, -42, -30);
 
         // Tween constantly moving player to whichever track he's in
         pc.trackIndex = 2 // i.e. the middle track out of 5
@@ -95,12 +99,11 @@ class Exercise extends Phaser.Scene {
 
         // Spawn joggers
         this.nJoggers = 0;
-        this.joggers = new Array();
+        this.joggers = this.add.group();
         this.time.addEvent({
-            args: [1],
-            callback: this.spawnJoggers,
+            callback: this.spawnJogger,
             callbackScope: this,
-            delay: 5000,
+            delay: 4000,
             loop: true,
         });
     }
@@ -122,48 +125,45 @@ class Exercise extends Phaser.Scene {
         this.aura.setX(pc.x - 400);
 
         // If you hit a jogger, u ded
-        this.joggers.forEach(function(jogger) {
+        this.joggers.children.iterate(function(jogger) {
             var scene = jogger.scene;
-            if (scene.physics.overlap(jogger, scene.aura)) {
-                scene.aura.setTint("0xDC143C");
+            if (scene.physics.collide(jogger, pc)) {
+                // scene.aura.setTint("0xDC143C");
                 scene.scene.pause("exercise");
             }
         });
     }
 
-    spawnJoggers(n) {
+    spawnJogger() {
         var modelPool = ["joggerA"];
-        for (let i = n; i > 0; i--) {
-            var model = Phaser.Math.RND.pick(modelPool);
-            var jogger = this.physics.add.sprite(this.cam.midPoint.x, -200, model, 0);
-            jogger.setScale(2.5);
-            this.joggers.push(jogger);
+        var model = Phaser.Math.RND.pick(modelPool);
+        var jogger = this.physics.add.sprite(this.cam.midPoint.x, -200, model, 0);
+        jogger.setScale(2.5);
+        this.joggers.add(jogger);
 
-            // run animation
-            var animName = "npc_run_" + this.nJoggers;
-            this.nJoggers++;
-            this.anims.create({
-                key: animName,
-                frames: this.anims.generateFrameNumbers(model, { frames: [0, 1] }),
-                frameRate: 2,
-                repeat: -1,
-            });
-            jogger.anims.play(animName);
-            var targetX = Phaser.Math.RND.pick(this.trackXCoords);
+        // run animation
+        var animName = "npc_run_" + this.nJoggers;
+        this.nJoggers++;
+        this.anims.create({
+            key: animName,
+            frames: this.anims.generateFrameNumbers(model, { frames: [0, 1] }),
+            frameRate: 2,
+            repeat: -1,
+        });
+        jogger.anims.play(animName);
+        var targetX = Phaser.Math.RND.pick(this.trackXCoords);
 
-            // move down screen
-            this.tweens.add({
-                targets: jogger,
-                x: targetX,
-                y: 800,
-                duration: 5000,
-                onComplete: () => {
-                    var scene = jogger.scene;
-                    var index = scene.joggers.indexOf(jogger);
-                    scene.joggers.splice(index, 1);
-                    jogger.destroy();
-                }
-            });
-        }
+        // move down screen
+        this.tweens.add({
+            targets: jogger,
+            x: targetX,
+            y: 700,
+            duration: 5000,
+            onComplete: () => {
+                this.joggers.killAndHide(jogger);
+                jogger.destroy();
+            },
+            onCompleteScope: this,
+        });
     }
 }
