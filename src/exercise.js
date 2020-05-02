@@ -18,9 +18,12 @@ class Exercise extends Phaser.Scene {
             loadingBar.clear();
         })
 
+        this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
+
         this.load.spritesheet("pc_e", "./assets/pc/pc_exercise_spritesheet.png", { frameWidth: 47, frameHeight: 74, spacing: 2, });
         this.load.spritesheet("joggerA", "./assets/npcs/jogger_A_spritesheet.png", { frameWidth: 49, frameHeight: 99, spacing: 2, });
         this.load.image("park", "./assets/tiles/park.png");
+        this.load.image("grass", "./assets/tiles/grass.png");
 
         this.leftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         this.rightKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -78,7 +81,7 @@ class Exercise extends Phaser.Scene {
         this.aura = aura;
 
         // pc hitbox mimics aura (because I can't get graphics to collide)
-        pc.setCircle(200/3, -42, -30);
+        pc.setCircle(55, -30, -18);
 
         // Tween constantly moving player to whichever track he's in
         pc.trackIndex = 2 // i.e. the middle track out of 5
@@ -106,6 +109,12 @@ class Exercise extends Phaser.Scene {
             delay: 4000,
             loop: true,
         });
+        this.time.addEvent({
+            callback: this.spawnGrass,
+            callbackScope: this,
+            delay: 100,
+            loop: true
+        })
     }
 
     update() {
@@ -129,6 +138,8 @@ class Exercise extends Phaser.Scene {
             var scene = jogger.scene;
             if (scene.physics.collide(jogger, pc)) {
                 // scene.aura.setTint("0xDC143C");
+                var tooClose = scene.add.bitmapText(0, 260, 'pixeled', 'Too Close!', 50);
+                tooClose.setX(scene.cam.midPoint.x - (tooClose.width/2));
                 scene.scene.pause("exercise");
             }
         });
@@ -165,5 +176,19 @@ class Exercise extends Phaser.Scene {
             },
             onCompleteScope: this,
         });
+    }
+
+    spawnGrass() {
+        var onLeft = Phaser.Math.Between(0,1);
+        var xOrigin = onLeft ? Phaser.Math.Between(20, 240) : Phaser.Math.Between(560, 780);
+        var xTarget= onLeft ? xOrigin - 300 : xOrigin + 300;
+        var grass = this.add.image(xOrigin, -10, "grass");
+        this.tweens.add({
+            targets: grass,
+            x: xTarget,
+            y: this.cam.displayHeight + 10,
+            duration: 10000,
+            onComplete: grass.destroy,
+        })
     }
 }
