@@ -103,18 +103,56 @@ class Exercise extends Phaser.Scene {
         // Spawn joggers
         this.nJoggers = 0;
         this.joggers = this.add.group();
-        this.time.addEvent({
+
+        var joggerSpawnEvent = this.time.addEvent({
             callback: this.spawnJogger,
             callbackScope: this,
             delay: 4000,
             loop: true,
+            paused: true,
         });
+
+        // Animate grass
         this.time.addEvent({
             callback: this.spawnGrass,
             callbackScope: this,
             delay: 100,
             loop: true
         })
+
+        // Intro text
+        var introText = this.make.bitmapText({
+            x: 0,
+            y: 240,
+            font: 'pixeled',
+            text: 'Run for 45 Minutes\nStay 6 feet from other people',
+            size: 20,
+            align: 1, // 0:left, 1:centre, 2:right,
+            add: true,
+        });
+        introText.setX(this.cam.midPoint.x - (introText.width / 2));
+        this.time.addEvent({
+            callback: () => {
+                introText.destroy();
+                joggerSpawnEvent.paused = false;
+                timerTickEvent.paused = false;
+            },
+            callbackScope: this,
+            delay: 5000,
+        });
+
+        // Timer
+        this.timerValue = 0;
+        this.timerText = this.add.bitmapText(0, 20, 'pixeled', this.timerValue, 40);
+        this.timerText.setDepth(3);
+        var timerTickEvent = this.time.addEvent({
+            callback: () => { this.timerValue++ },
+            callbackScope: this,
+            delay: 1000,
+            loop: true,
+            paused: true,
+        })
+
     }
 
     update() {
@@ -133,13 +171,17 @@ class Exercise extends Phaser.Scene {
 
         this.aura.setX(pc.x - 400);
 
+        // Update the timer
+        this.timerText.setText(this.timerValue.toString());
+        this.timerText.setX(this.cam.midPoint.x - (this.timerText.width/2));
+
         // If you hit a jogger, u ded
         this.joggers.children.iterate(function(jogger) {
             var scene = jogger.scene;
             if (scene.physics.collide(jogger, pc)) {
                 // scene.aura.setTint("0xDC143C");
                 var tooClose = scene.add.bitmapText(0, 260, 'pixeled', 'Too Close!', 50);
-                tooClose.setX(scene.cam.midPoint.x - (tooClose.width/2));
+                tooClose.setX(scene.cam.midPoint.x - (tooClose.width / 2));
                 scene.scene.pause("exercise");
             }
         });
@@ -179,9 +221,9 @@ class Exercise extends Phaser.Scene {
     }
 
     spawnGrass() {
-        var onLeft = Phaser.Math.Between(0,1);
+        var onLeft = Phaser.Math.Between(0, 1);
         var xOrigin = onLeft ? Phaser.Math.Between(20, 240) : Phaser.Math.Between(560, 780);
-        var xTarget= onLeft ? xOrigin - 300 : xOrigin + 300;
+        var xTarget = onLeft ? xOrigin - 300 : xOrigin + 300;
         var grass = this.add.image(xOrigin, -10, "grass");
         this.tweens.add({
             targets: grass,
