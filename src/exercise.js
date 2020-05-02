@@ -27,6 +27,8 @@ class Exercise extends Phaser.Scene {
 
         this.leftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         this.rightKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
+        this.finishedScene = false;
     }
 
     create() {
@@ -148,10 +150,15 @@ class Exercise extends Phaser.Scene {
         var timerTickEvent = this.time.addEvent({
             callback: () => { this.timerValue++ },
             callbackScope: this,
-            delay: 1000,
+            delay: 1500,
             loop: true,
             paused: true,
-        })
+        });
+
+        // Wait on the eventual fadeout to go back home
+        this.cam.once('camerafadeoutcomplete', function(){
+            this.scene.scene.start('home');
+        });
 
     }
 
@@ -173,16 +180,22 @@ class Exercise extends Phaser.Scene {
 
         // Update the timer
         this.timerText.setText(this.timerValue.toString());
-        this.timerText.setX(this.cam.midPoint.x - (this.timerText.width/2));
+        this.timerText.setX(this.cam.midPoint.x - (this.timerText.width / 2));
+        if (this.timerValue >= 45 && !(this.finishedScene)) {
+            var winText = this.add.bitmapText(0, 260, 'pixeled', 'You did it!', 50);
+            winText.setX(this.cam.midPoint.x - (winText.width / 2));
+            this.cam.fadeOut(5000);
+            this.finishedScene = true;
+        }
 
         // If you hit a jogger, u ded
         this.joggers.children.iterate(function(jogger) {
             var scene = jogger.scene;
-            if (scene.physics.collide(jogger, pc)) {
-                // scene.aura.setTint("0xDC143C");
+            if (scene.physics.collide(jogger, pc) && !(scene.finishedScene)) {
                 var tooClose = scene.add.bitmapText(0, 260, 'pixeled', 'Too Close!', 50);
                 tooClose.setX(scene.cam.midPoint.x - (tooClose.width / 2));
-                scene.scene.pause("exercise");
+                scene.cam.fadeOut(5000);
+                scene.finishedScene = true;
             }
         });
     }

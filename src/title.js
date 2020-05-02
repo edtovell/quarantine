@@ -54,7 +54,7 @@ class Title extends Phaser.Scene {
         // listen for the next fadeout to launch the game
         cam.once('camerafadeoutcomplete', function(){
             this.scene.scene.start('home');
-        })
+        });
     }
 
     update() {

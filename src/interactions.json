@@ -178,9 +178,10 @@
             },
             "Exercise":
             {
-                "response": "Not ready yet",
-                "frequencyAllowed": 0,
-                "next": "exit"
+                "response": "OK then. Let's go.",
+                "frequencyAllowed": 24,
+                "next": "exercise",
+                "ifNotAllowed": "You've already done that today, don't get greedy now."
             },
             "Clap for the NHS":
             {
@@ -195,7 +196,7 @@
             {
                 "response": "You're not allowed. You know you're not. Come on man, there's one rule: don't go out.",
                 "next": "exit",
-                "frequencyAllowed": 0,
+                "frequencyAllowed": 0
             }
         }
     }
