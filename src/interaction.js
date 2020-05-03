@@ -82,7 +82,10 @@ class Interaction extends Phaser.Scene {
                         this.setInteractionObj(null);
                         this.cam.fadeOut();
                         this.time.addEvent({
-                            callback: () => { this.scene.start("exercise") },
+                            callback: () => { 
+                                this.sound.stopAll();
+                                this.scene.start("exercise");
+                            },
                             callbackScope: this,
                             delay: 1500,
                         });

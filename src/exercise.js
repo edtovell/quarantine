@@ -157,6 +157,8 @@ class Exercise extends Phaser.Scene {
 
         // Wait on the eventual fadeout to go back home
         this.cam.once('camerafadeoutcomplete', function(){
+            this.scene.scene.stop('home');
+            this.scene.scene.stop('home_hud');
             this.scene.scene.start('home');
         });
 
@@ -184,7 +186,7 @@ class Exercise extends Phaser.Scene {
         if (this.timerValue >= 45 && !(this.finishedScene)) {
             var winText = this.add.bitmapText(0, 260, 'pixeled', 'You did it!', 50);
             winText.setX(this.cam.midPoint.x - (winText.width / 2));
-            this.cam.fadeOut(5000);
+            this.cam.fadeOut(3000);
             this.finishedScene = true;
         }
 
@@ -194,7 +196,7 @@ class Exercise extends Phaser.Scene {
             if (scene.physics.collide(jogger, pc) && !(scene.finishedScene)) {
                 var tooClose = scene.add.bitmapText(0, 260, 'pixeled', 'Too Close!', 50);
                 tooClose.setX(scene.cam.midPoint.x - (tooClose.width / 2));
-                scene.cam.fadeOut(5000);
+                scene.cam.fadeOut(3000);
                 scene.finishedScene = true;
             }
         });

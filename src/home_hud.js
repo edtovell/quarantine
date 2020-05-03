@@ -21,8 +21,12 @@ class HomeHUD extends Phaser.Scene {
         var moodText = this.add.bitmapText(cam.midPoint.x, 10, 'pixeled', 'mood', 20);
         this.moodText = moodText;
 
+        // This is the first run, so use this.firstRun to make sure all graphics get drawn
+        this.firstRun = true;
         this.drawMoodBar(0);
         this.drawTimePassed();
+        this.drawToolTip(0);
+        this.firstRun = false;
 
         // Increase time passed
         this.time.addEvent({
@@ -62,15 +66,12 @@ class HomeHUD extends Phaser.Scene {
             this.moodValMax, // width
             20 // height
         ];
-        if (this.moodBarContainer === undefined) {
+        if (this.firstRun) {
             // draw the container
             this.moodBarContainer = this.add.graphics();
             this.moodBarContainer.lineStyle(1, "0x000000");
             this.moodBarContainer.strokeRect(...drawArgs)
-        }
-
-        // draw the moodbar
-        if (this.moodBar === undefined) {
+            // draw the moodbar
             this.moodBar = this.add.graphics();
         }
 
@@ -100,7 +101,7 @@ class HomeHUD extends Phaser.Scene {
     }
 
     drawTimePassed() {
-        if (this.timePassedTextObj === undefined) {
+        if (this.firstRun) {
             this.timePassedTextObj = this.add.bitmapText(10, 10, 'pixeled', '', 20);
         }
         var days = Math.trunc(this.hoursPassed / 24).toString().padStart(2, "0");
@@ -128,7 +129,7 @@ class HomeHUD extends Phaser.Scene {
     drawToolTip(x) {
         // show the hint when near interactable objects
         var cam = this.cameras.main;
-        if (this.toolTip === undefined) {
+        if (this.firstRun) {
             this.toolTip = this.add.bitmapText(0, 0, 'pixeled', '', 20);
             this.toolTip.setPosition(cam.midPoint.x, cam.displayHeight - 35);
         }

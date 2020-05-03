@@ -91,6 +91,9 @@ class Home extends Phaser.Scene {
         this.hoursPassed = 0; // Probably a good idea to save the hour of the day too
 
         // Instantiate HUD and Interactions scenes
+        if (this.scene.isActive("home_hud")){
+            this.scene.stop("home_hud");
+        }
         this.scene.launch("home_hud");
         this.hud = this.scene.get("home_hud");
 
