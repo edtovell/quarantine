@@ -19,6 +19,7 @@ class Exercise extends Phaser.Scene {
         })
 
         this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
+        this.load.audio("exercise", "./assets/sounds/exercise.wav");
 
         this.load.spritesheet("pc_e", "./assets/pc/pc_exercise_spritesheet.png", { frameWidth: 47, frameHeight: 74, spacing: 2, });
         this.load.spritesheet("joggerA", "./assets/npcs/jogger_A_spritesheet.png", { frameWidth: 49, frameHeight: 99, spacing: 2, });
@@ -32,6 +33,9 @@ class Exercise extends Phaser.Scene {
     }
 
     create() {
+        var music = this.sound.add("exercise", { loop: true });
+        music.play();
+
         // Draw background
         var park = this.add.image(game.config.width / 2, game.config.height / 2, 'park');
         park.setScale(2);

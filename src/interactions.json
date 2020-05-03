@@ -185,9 +185,9 @@
             },
             "Clap for the NHS":
             {
-                "response": "You achieve nothing, but feel like you did.",
+                "response": "OK sure - let's go clap.",
                 "points": 5,
-                "next": "exit",
+                "next": "clap",
                 "frequencyAllowed": 168,
                 "ifNotAllowed": "This only happens once a week, and you'd feel weird doing it when nobody else is."
 

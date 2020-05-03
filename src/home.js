@@ -44,6 +44,7 @@ class Home extends Phaser.Scene {
 
     create() {
         var music = this.sound.add("home", { loop: true });
+        this.sound.stopAll();
         music.play();
 
         // Instantiate world

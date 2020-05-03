@@ -25,6 +25,7 @@ class Clap extends Phaser.Scene {
     }
 
     create() {
+        this.sound.stopAll();
         var clap = this.sound.add("clap");
 
         var cam = this.cameras.main;
@@ -75,7 +76,7 @@ class Clap extends Phaser.Scene {
 
         // Fade Out after 35 seconds
         this.time.addEvent({
-            callback: ()=>{cam.fadeOut(3000)},
+            callback: () => { cam.fadeOut() },
             callbackScope: this,
             delay: 35000,
         });
