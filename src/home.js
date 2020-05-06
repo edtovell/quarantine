@@ -16,6 +16,11 @@ class Home extends Phaser.Scene {
         dbglog("initialised home scene");
     }
 
+    init(data) {
+        this.pcStartingX = data.pcStartingX || 20;
+        this.pcFacingLeft = data.pcFacingLeft || false;
+    }
+
     preload() {
         // Loading Bar
         var midPoint = this.cameras.main.midPoint;
@@ -54,12 +59,15 @@ class Home extends Phaser.Scene {
         this.bg = bg;
 
         // Instantiate Player Character
-        var pc = this.physics.add.sprite(20, 300, "pc", 0);
+        var pc = this.physics.add.sprite(this.pcStartingX, 300, "pc", 0);
         pc.isMoving = function() {
             let vel = this.body.velocity;
             return Boolean(vel.x || vel.y);
         }
         pc.setCollideWorldBounds(true);
+        if(this.pcFacingLeft){
+            pc.setFlipX(true);
+        }
         this.pc = pc;
 
         // Sort out Camera and World Bounds

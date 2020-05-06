@@ -9,8 +9,8 @@ class HomeHUD extends Phaser.Scene {
         // load custom font
         this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
         this.moodValMax = 300;
-        this.moodVal = this.moodValMax;
-        this.hoursPassed = 0;
+        this.moodVal = game.registry.get('moodVal') || this.moodValMax;
+        this.hoursPassed = game.registry.get('hoursPassed') || 0;
     }
 
     create() {
@@ -30,7 +30,10 @@ class HomeHUD extends Phaser.Scene {
 
         // Increase time passed
         this.time.addEvent({
-            callback: () => { this.hoursPassed += 1 },
+            callback: () => {
+                this.hoursPassed += 1;
+                game.registry.set('hoursPassed', this.hoursPassed);
+            },
             callbackScope: this,
             delay: 5000,
             loop: true,
@@ -97,6 +100,7 @@ class HomeHUD extends Phaser.Scene {
 
             // change moodBarVal accordingly
             this.moodVal += diff;
+            game.registry.set("moodVal", this.moodVal);
         }
     }
 
