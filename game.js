@@ -5,7 +5,7 @@ var config = {
     physics: {
         default: "arcade",
         arcade: {
-            debug: true,
+            // debug: true,
         }
     },
     // scene: [Title, Home, HomeHUD, Interaction, Exercise, Clap]
