@@ -25,14 +25,14 @@ class Supermarket extends Phaser.Scene {
         this.load.spritesheet("granny", "./assets/npcs/granny_spritesheet.png", {frameWidth: 40, frameHeight: 40, spacing: 2});
         this.load.tilemapTiledJSON("map", "./assets/tiles/supermarket/supermarket.json");
         this.load.image("tiles", "./assets/tiles/supermarket/supermarket_tileset.png");
-        this.load.spritesheet("checkout", "./assets/tiles/supermarket/checkout.piko", { frameWidth: 40, frameHeight: 80, spacing: 1 });
-        this.load.image("sign_bogroll", "/assets/tiles/supermarket/sign_bogroll.piko");
-        this.load.image("sign_milk", "/assets/tiles/supermarket/sign_milk.piko");
-        this.load.image("sign_bread", "/assets/tiles/supermarket/sign_bread.piko");
-        this.load.image("bogroll", "/assets/tiles/supermarket/bogroll.piko");
+        this.load.spritesheet("checkout", "./assets/tiles/supermarket/checkout.png", { frameWidth: 40, frameHeight: 80, spacing: 1 });
+        this.load.image("sign_bogroll", "/assets/tiles/supermarket/sign_bogroll.png");
+        this.load.image("sign_milk", "/assets/tiles/supermarket/sign_milk.png");
+        this.load.image("sign_bread", "/assets/tiles/supermarket/sign_bread.png");
+        this.load.image("bogroll", "/assets/tiles/supermarket/bogroll.png");
         this.load.image("milk", "/assets/tiles/supermarket/milk.piko");
-        this.load.image("bread", "/assets/tiles/supermarket/bread.piko");
-        this.load.image("door", "/assets/tiles/supermarket/door.piko");
+        this.load.image("bread", "/assets/tiles/supermarket/bread.png");
+        this.load.image("door", "/assets/tiles/supermarket/door.png");
         this.load.audio("collect", "./assets/sounds/collectItem.wav");
         this.load.audio("kaching", "./assets/sounds/kaching.wav");
 
