@@ -85,7 +85,7 @@ class Clap extends Phaser.Scene {
         cam.once('camerafadeoutcomplete', function() {
             this.scene.scene.stop('home');
             this.scene.scene.stop('home_hud');
-            this.scene.scene.start('home');
+            this.scene.scene.start('home', {pcStartingX: 700, pcFacingLeft: true});
         });
     }
 

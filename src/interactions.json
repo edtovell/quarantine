@@ -196,8 +196,9 @@
             "Visit Mum":
             {
                 "response": "You're not allowed. You know you're not. Come on man, there's one rule: don't go out.",
+                "frequencyAllowed": 56,
                 "next": "exit",
-                "frequencyAllowed": 0.001
+                "ifNotAllowed": "No."
             }
         }
     }

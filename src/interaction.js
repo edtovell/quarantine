@@ -269,7 +269,6 @@ class Interaction extends Phaser.Scene {
         }
         if (this.userSelectionData.time) {
             this.hud.hoursPassed += this.userSelectionData.time;
-            dbglog()
         }
 
     }

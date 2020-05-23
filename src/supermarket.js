@@ -45,7 +45,7 @@ class Supermarket extends Phaser.Scene {
 
     create() {
         this.finishedScene = false;
-        
+
         function coord(n) {
             // get pixel coordinates from tile coordinates
             return (n * T) + (T / 2)
@@ -291,7 +291,7 @@ class Supermarket extends Phaser.Scene {
         cam.once('camerafadeoutcomplete', function(){
             this.scene.scene.stop('home');
             this.scene.scene.stop('home_hud');
-            this.scene.scene.start('home');
+            this.scene.scene.start('home', {pcStartingX: 700, pcFacingLeft: true});
         });
 
     }
