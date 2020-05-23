@@ -11,6 +11,8 @@ class HomeHUD extends Phaser.Scene {
         this.moodValMax = 300;
         this.moodVal = game.registry.get('moodVal') || this.moodValMax;
         this.hoursPassed = game.registry.get('hoursPassed') || 0;
+        this.load.audio("collect", "./assets/sounds/collectItem.wav");
+        this.load.audio("boop", "./assets/sounds/boop.wav");
     }
 
     create() {
@@ -41,7 +43,7 @@ class HomeHUD extends Phaser.Scene {
 
         // Decrease mood
         this.time.addEvent({
-            callback: () => { this.drawMoodBar(-1) },
+            callback: () => { this.drawMoodBar(-1, true) },
             callbackScope: this,
             delay: 400,
             loop: true,
@@ -53,7 +55,15 @@ class HomeHUD extends Phaser.Scene {
         this.drawTimePassed();
     }
 
-    drawMoodBar(diff) {
+    drawMoodBar(diff, suppressSFX) {
+        if(diff && !suppressSFX){
+            if(diff > 0){
+
+                this.sound.play("collect");
+            } else if(diff < 0){
+                this.sound.play("boop");
+            }
+        }
         if (diff) {
             // only count the diff up to the max, or down to 0
             if (this.moodVal + diff < 0) {

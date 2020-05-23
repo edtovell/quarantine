@@ -172,13 +172,14 @@
         {
             "Buy Food":
             {
-                "response": "Not ready yet",
-                "frequencyAllowed": 0,
-                "next": "exit"
+                "response": "OK then, let's go to the supermarket.",
+                "frequencyAllowed": 48,
+                "next": "supermarket",
+                "ifNotAllowed": "I think you've got plenty of supplies for now. Best not risk it."
             },
             "Exercise":
             {
-                "response": "OK then. Let's go.",
+                "response": "OK then, get your trainers on. We'll go for a jog.",
                 "frequencyAllowed": 24,
                 "next": "exercise",
                 "ifNotAllowed": "You've already done that today, don't get greedy now."
@@ -196,7 +197,7 @@
             {
                 "response": "You're not allowed. You know you're not. Come on man, there's one rule: don't go out.",
                 "next": "exit",
-                "frequencyAllowed": 0
+                "frequencyAllowed": 0.001
             }
         }
     }

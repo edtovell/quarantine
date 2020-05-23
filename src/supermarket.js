@@ -3,7 +3,6 @@ T = 20 // size of one tile
 class Supermarket extends Phaser.Scene {
     constructor() {
         super({ key: "supermarket" });
-        this.finishedScene = false;
     }
 
     preload() {
@@ -33,8 +32,10 @@ class Supermarket extends Phaser.Scene {
         this.load.image("milk", "/assets/tiles/supermarket/milk.piko");
         this.load.image("bread", "/assets/tiles/supermarket/bread.png");
         this.load.image("door", "/assets/tiles/supermarket/door.png");
+        this.load.audio("supermarket", "./assets/sounds/supermarket.wav");
         this.load.audio("collect", "./assets/sounds/collectItem.wav");
         this.load.audio("kaching", "./assets/sounds/kaching.wav");
+        this.load.audio("boop", "./assets/sounds/boop.wav");
 
         this.leftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         this.rightKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -43,6 +44,8 @@ class Supermarket extends Phaser.Scene {
     }
 
     create() {
+        this.finishedScene = false;
+        
         function coord(n) {
             // get pixel coordinates from tile coordinates
             return (n * T) + (T / 2)
@@ -79,7 +82,7 @@ class Supermarket extends Phaser.Scene {
             return Boolean(v.x || v.y);
         }
         cam.startFollow(pc);
-        pc.controlsEnabled = true;
+        pc.controlsEnabled = false;
         this.physics.add.collider(pc, obstacles);
         this.pc = pc;
 
@@ -136,6 +139,7 @@ class Supermarket extends Phaser.Scene {
             bogroll.destroy();
             pc.collectedBogroll = true;
             pc.scene.sound.play('collect');
+            pc.scene.hud.crossOffListItem("bogroll");
         });
 
         this.signs.add(this.physics.add.sprite(coord(7), coord(7), "sign_milk"));
@@ -145,6 +149,7 @@ class Supermarket extends Phaser.Scene {
             milk.destroy();
             pc.collectedMilk = true;
             pc.scene.sound.play('collect');
+            pc.scene.hud.crossOffListItem("milk");
         });
       
         this.signs.add(this.physics.add.sprite(coord(33), coord(2), "sign_bread"));
@@ -154,6 +159,7 @@ class Supermarket extends Phaser.Scene {
             bread.destroy();
             pc.collectedBread = true;
             pc.scene.sound.play('collect');
+            pc.scene.hud.crossOffListItem("bread");
         });
 
         this.signs.getChildren().forEach(function(sign) {
@@ -162,12 +168,13 @@ class Supermarket extends Phaser.Scene {
         });
 
         // if you get the three things, you can check out
+        pc.canCheckOut = false;
         pc.hasCheckedOut = false;
 
         this.checkoutZone = this.add.zone(coord(15), coord(27), T*20, 1);
         this.physics.add.existing(this.checkoutZone).setVisible(true);
         this.physics.add.overlap(pc, this.checkoutZone, function(pc, checkoutZone){
-            if(pc.collectedBread && pc.collectedMilk && pc.collectedBogroll ){
+            if( pc.canCheckOut ){
 
                 pc.hasCheckedOut = true;
                 pc.controlsEnabled = false;
@@ -181,7 +188,10 @@ class Supermarket extends Phaser.Scene {
                 checkoutZone.destroy();
 
                 pc.scene.time.addEvent({
-                    callback: ()=>{pc.controlsEnabled = true},
+                    callback: function() {
+                        pc.controlsEnabled = true;
+                        pc.scene.hud.goToExit();
+                    },
                     callbackScope: this,
                     delay: 1000,
                 });
@@ -190,8 +200,20 @@ class Supermarket extends Phaser.Scene {
 
         // if you have checked out, you can go to the exit and win
         this.physics.add.overlap(pc, door, function(pc, door){
-            if(pc.hasCheckedOut){
-                console.log('win');
+            var scene = pc.scene;
+            if(pc.hasCheckedOut && !scene.finishedScene){
+                scene.finishedScene = true;
+                scene.pc.controlsEnabled = false;
+                scene.pc.setVelocity(0,0);
+                scene.pc.setActive(false);
+                pc.anims.stop();
+                pc.setFrame(0);
+                scene.shoppers.getChildren().forEach((x)=>{x.setActive(false)});
+                var winText = scene.add.bitmapText(0, scene.cam.midPoint.y - 50, 'pixeled', 'You did it!', 25);
+                winText.setX(scene.cam.midPoint.x - (winText.width / 2));
+                scene.scene.stop("supermarket_hud")
+                scene.cam.fadeOut(3000);
+                
             };
         })
 
@@ -240,11 +262,38 @@ class Supermarket extends Phaser.Scene {
             [[[13, 18], [13,26], [8,26], [8,18]], 16000],
         ];
 
-        for (let obj of paths){
+        for (let obj of paths) {
             let [path, duration] = obj;
-            path = path.map((x)=>{return x.map(coord)});
+            path = path.map((x) => { return x.map(coord) });
             this.spawnShopper(path, duration);
         }
+
+        // Instantiate HUD
+        if (this.scene.isActive("supermarket_hud")) {
+            this.scene.stop("supermarket_hud");
+        }
+        this.scene.launch("supermarket_hud");
+        this.hud = this.scene.get("supermarket_hud");
+
+        // Fade in
+        cam.fadeIn();
+        cam.once('camerafadeincomplete', function(){
+            pc.controlsEnabled = true;
+        });
+
+        // Music
+        var music = this.sound.add("supermarket", { loop: true });
+        this.sound.stopAll();
+        music.play();
+
+        // Listen for Fade out to go home
+        cam.fadeIn();
+        cam.once('camerafadeoutcomplete', function(){
+            this.scene.scene.stop('home');
+            this.scene.scene.stop('home_hud');
+            this.scene.scene.start('home');
+        });
+
     }
 
     update() {
@@ -288,6 +337,11 @@ class Supermarket extends Phaser.Scene {
         }
 
         this.shoppers.getChildren().forEach(this.updateShopper);
+
+        if(pc.collectedBread && pc.collectedMilk && pc.collectedBogroll && !pc.canCheckOut){
+            pc.canCheckOut = true;
+            this.hud.goToCheckout();
+        }
     }
 
     spawnShopper(path, duration) {
@@ -345,8 +399,11 @@ class Supermarket extends Phaser.Scene {
                     scene.pc.setVelocity(0,0);
                     scene.pc.setActive(false);
                     scene.shoppers.getChildren().forEach((x)=>{x.setActive(false)});
+                    scene.sound.stopAll();
+                    scene.sound.play("boop");
                     var tooClose = scene.add.bitmapText(0, scene.cam.midPoint.y - 50, 'pixeled', 'Too Close!', 18);
                     tooClose.setX(scene.cam.midPoint.x - (tooClose.width / 2));
+                    scene.scene.stop("supermarket_hud")
                     scene.cam.fadeOut(3000);
                     scene.finishedScene = true;
                 }

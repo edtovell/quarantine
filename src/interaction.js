@@ -78,7 +78,7 @@ class Interaction extends Phaser.Scene {
                     if (["exit", undefined].includes(this.userSelectionData.next)) {
                         this.setInteractionObj(null);
                         this.exitInteraction();
-                    } else if(["exercise", "clap"].includes(this.userSelectionData.next)){
+                    } else if(["exercise", "clap", "supermarket"].includes(this.userSelectionData.next)){
                         this.setInteractionObj(null);
                         this.cam.fadeOut();
                         this.time.addEvent({

@@ -20,6 +20,7 @@ class Exercise extends Phaser.Scene {
 
         this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
         this.load.audio("exercise", "./assets/sounds/exercise.wav");
+        this.load.audio("boop", "./assets/sounds/boop.wav");
 
         this.load.spritesheet("pc_e", "./assets/pc/pc_exercise_spritesheet.png", { frameWidth: 47, frameHeight: 74, spacing: 2, });
         this.load.spritesheet("joggerA", "./assets/npcs/jogger_A_spritesheet.png", { frameWidth: 49, frameHeight: 99, spacing: 2, });
@@ -200,6 +201,8 @@ class Exercise extends Phaser.Scene {
             if (scene.physics.collide(jogger, pc) && !(scene.finishedScene)) {
                 var tooClose = scene.add.bitmapText(0, 260, 'pixeled', 'Too Close!', 50);
                 tooClose.setX(scene.cam.midPoint.x - (tooClose.width / 2));
+                scene.sound.stopAll();
+                scene.sound.play('boop');
                 scene.cam.fadeOut(3000);
                 scene.finishedScene = true;
             }
