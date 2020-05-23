@@ -24,6 +24,7 @@ class Title extends Phaser.Scene {
         })
         this.load.on("complete", function() {
             dbglog("finished loading title");
+            loadingBar.clear();
         })
 
         this.load.audio("title", "./assets/sounds/title.wav") //beepbox.co/#8n31s5k4l00e0dt2mm0a7g0ej07i0r1o3210T1v1L4uecq1d7fay0z1C3c0AcF8B7VaQ0001PffffE0000T6v3L4u74q1d1f8y2z1C1c0W42T0v1L4u14q1d6f9y2z1C0w5c1h2T4v1L4uf0q1z6666ji8k8k3jSBKSJJAArriiiiii07JCABrzrrrrrrr00YrkqHrsrrrrjr005zrAqzrjzrrqr1jRjrqGGrrzsrsA099ijrABJJJIAzrrtirqrqjqixzsrAjrqjiqaqqysttAJqjikikrizrHtBJJAzArzrIsRCITKSS099ijrAJS____Qg99habbCAYrDzh00b00810xd3gM020w404h4g4x8i4x8i4w0x4h4h4h4gp222GryvjQahHuzYunHGuKOZ2pCIrhYunNX3qOKR_jBNfjq-bpL5-1czDZAxbRsLnHWcCaCzO2idtjhZvb5jhVb95YLOX5PrjLMarQvnITE_0g4LjhD4s2sTghQQqa3nEerEE0
@@ -39,37 +40,95 @@ class Title extends Phaser.Scene {
         this.controlsEnabled = true;
 
         var cam = this.cam;
+        this.cam = cam;
 
-        var titleText = this.add.bitmapText(0, 0, 'pixeled', 'Quarantine!', 60);
-        titleText.setPosition(cam.midPoint.x - (titleText.width / 2), cam.displayHeight * .3);
-        titleText.setTint(BLUE);
-
-        var playText = this.add.bitmapText(0, 0, 'pixeled', 'space to start', 20);
-        playText.setTint(BLUE);
-        playText.setPosition(cam.midPoint.x - (playText.width / 2), cam.displayHeight *.8);
-
-        cam.fadeIn();
-
-
-        // listen for the next fadeout to launch the game
-        cam.once('camerafadeoutcomplete', function(){
-            this.scene.scene.start('home');
-        });
+        this.startTextCrawl();
     }
 
     update() {
         if(this.controlsEnabled){
-            // Space to start - tween to fade music out
             if (this.spacebar._justDown) {
-                this.tweens.add({
-                    targets: this.titleMusic,
-                    volume: 0,
-                    duration: 1000,
-                    onComplete: () => {this.titleMusic.stop()},
-                })
-                this.cam.fadeOut();
                 this.controlsEnabled = false;
+                if (this.state == "crawl") {
+                    this.crawlText.destroy();
+                    this.startTitlePage();
+                    this.state = "title";
+                    this.time.addEvent({
+                        callback: () => {this.controlsEnabled = true},
+                        callbackScope: this,
+                        delay: 1000
+                    })
+                } else if (this.state == "title"){
+                    // tween out the music
+                    this.tweens.add({
+                        targets: this.titleMusic,
+                        volume: 0,
+                        duration: 1000,
+                        onComplete: () => {this.titleMusic.stop()},
+                    });
+
+                    this.cam.fadeOut();
+                }
             }
         }
+    }
+
+    startTextCrawl(){
+        this.state = "crawl";
+        var crawlText = ""+
+            "March 2020:\n" +
+            "As the whole world enters lockdown to\n" +
+            "fight COVID-19, you are given paid leave\n" +
+            "from work and ordered to stay at home.\n\n" +
+            "Young, single, middle-class, and suddenly\n" +
+            "stuck in a North London flat with lots\n" +
+            "of time on your hands, how do you plan to\n" +
+            "occupy yourself?\n\n" +
+            "How long can you keep the perils of\n" +
+            "anxiety and boredom at bay?\n\n" +
+            "What price will you pay to maintain \n" +
+            "your sanity?\n\n" +
+            "Who will you become?"
+
+        this.crawlText = this.make.bitmapText({
+            x: 300,
+            y: 620,
+            font: 'pixeled',
+            text: crawlText,
+            size: 20,
+            align: 1, // 0:left, 1:centre, 2:right,
+            add: true,
+        });
+        this.crawlText.setX(this.cam.midPoint.x - (this.crawlText.width / 2));
+        this.crawlText.setTint(BLUE);
+        this.tweens.add({
+            targets: this.crawlText,
+            y: 0 - this.crawlText.height,
+            duration: 30000,
+            onComplete: () => {
+                this.crawlText.destroy();
+                this.startTitlePage();
+            }
+        });
+    }
+
+    startTitlePage(){
+        this.state = "title";
+        var titleText = this.add.bitmapText(0, 0, 'pixeled', 'Quarantine!', 60);
+        titleText.setPosition(this.cam.midPoint.x - (titleText.width / 2), this.cam.displayHeight * .3);
+        titleText.setTint(BLUE);
+
+        var playText = this.add.bitmapText(0, 0, 'pixeled', 'space to start', 20);
+        playText.setTint(BLUE);
+        playText.setPosition(this.cam.midPoint.x - (playText.width / 2), this.cam.displayHeight *.8);
+
+        
+        this.cam.fadeIn();
+
+        // listen for the next fadeout to launch the game
+
+        this.cam.once('camerafadeoutcomplete', function(){
+            this.scene.scene.start('home');
+        });
     }
 }

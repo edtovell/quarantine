@@ -14,7 +14,7 @@ class Interaction extends Phaser.Scene {
     }
 
     create() {
-        this.history = new Array();
+        this.history = game.registry.get('history') || new Array();
         this.home = this.scene.get("home");
         this.hud = this.scene.get("home_hud");
         this.cam = this.cameras.main;
@@ -35,6 +35,13 @@ class Interaction extends Phaser.Scene {
         this.choiceColor = "0xFF6347";
         this.userSelection;
         this.userSelectionData;
+
+        // just to be safe, kill all the other scenes
+        this.scene.stop("exercise");
+        this.scene.stop("supermarket");
+        this.scene.stop("supermarket_hud");
+        this.scene.stop("clap");
+        this.scene.stop("title");
     }
 
     update() {
@@ -70,25 +77,33 @@ class Interaction extends Phaser.Scene {
                         );
                     }
                 } else if (this.userSelection) {
-                    if (this.actionAllowed(this.userSelection, this.userSelectionData.frequencyAllowed)) {
-                        this.applyResults();
-                        this.addEventToHistory(this.userSelection);
-                    }
-
                     if (["exit", undefined].includes(this.userSelectionData.next)) {
+                        if (this.actionAllowed(this.userSelection, this.userSelectionData.frequencyAllowed)) {
+                            this.applyResults();
+                            this.addEventToHistory(this.userSelection);
+                        }
                         this.setInteractionObj(null);
                         this.exitInteraction();
+
                     } else if(["exercise", "clap", "supermarket"].includes(this.userSelectionData.next)){
                         this.setInteractionObj(null);
-                        this.cam.fadeOut();
-                        this.time.addEvent({
-                            callback: () => { 
-                                this.sound.stopAll();
-                                this.scene.start(this.userSelectionData.next);
-                            },
-                            callbackScope: this,
-                            delay: 1500,
-                        });
+                        if (this.actionAllowed(this.userSelection, this.userSelectionData.frequencyAllowed)){
+                            this.addEventToHistory(this.userSelection);
+                            this.cam.fadeOut();
+                            this.time.addEvent({
+                                callback: () => { 
+                                    this.sound.stopAll();
+                                    this.scene.stop('home');
+                                    this.scene.stop('home_hud');
+                                    this.scene.start(this.userSelectionData.next);
+                                },
+                                callbackScope: this,
+                                delay: 1500,
+                            });
+                        } else {
+                            this.exitInteraction();
+                        }
+
 
                     } else if (this.userSelection.next) {
                         this.setInteractionObj(this.obj, this.userSelectionData.next);
@@ -261,6 +276,7 @@ class Interaction extends Phaser.Scene {
             "time": this.hud.hoursPassed,
             "key": key,
         });
+        game.registry.set('history', this.history);
     }
 
     applyResults() {

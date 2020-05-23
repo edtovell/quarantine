@@ -17,7 +17,7 @@ class Home extends Phaser.Scene {
     }
 
     init(data) {
-        this.pcStartingX = data.pcStartingX || 20;
+        this.pcStartingX = data.pcStartingX || 100;
         this.pcFacingLeft = data.pcFacingLeft || false;
     }
 

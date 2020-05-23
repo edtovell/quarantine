@@ -31,7 +31,7 @@ class Supermarket extends Phaser.Scene {
         this.load.image("bogroll", "/assets/tiles/supermarket/bogroll.png");
         this.load.image("milk", "/assets/tiles/supermarket/milk.piko");
         this.load.image("bread", "/assets/tiles/supermarket/bread.png");
-        this.load.image("door", "/assets/tiles/supermarket/door.png");
+        this.load.image("exit", "/assets/tiles/supermarket/door.png");
         this.load.audio("supermarket", "./assets/sounds/supermarket.wav");
         this.load.audio("collect", "./assets/sounds/collectItem.wav");
         this.load.audio("kaching", "./assets/sounds/kaching.wav");
@@ -67,8 +67,8 @@ class Supermarket extends Phaser.Scene {
         cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cam = cam;
 
-        // place door
-        var door = this.physics.add.image(coord(5), coord(29), 'door');
+        // place exit
+        var exit = this.physics.add.image(coord(5), coord(29), 'exit');
 
         // instantiate player
         var pc = this.physics.add.sprite(coord(5), coord(29), 'pc_sp', 0);
@@ -199,7 +199,7 @@ class Supermarket extends Phaser.Scene {
         });
 
         // if you have checked out, you can go to the exit and win
-        this.physics.add.overlap(pc, door, function(pc, door){
+        this.physics.add.overlap(pc, exit, function(pc, exit){
             var scene = pc.scene;
             if(pc.hasCheckedOut && !scene.finishedScene){
                 scene.finishedScene = true;
