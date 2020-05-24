@@ -208,6 +208,22 @@ class Home extends Phaser.Scene {
             this.darkLayer.setAlpha(MAX_DARKNESS * (darknessCoeff / 12));
         }
 
+        // If your mood drops to 0, game over
+        if (this.hud.moodVal < 1){
+            this.userControlsActive = false;
+            var finalScore = this.hud.hoursPassed;
+            this.scene.stop("interaction");
+            this.scene.stop("home_hud");
+            this.sound.stopAll();
+            this.cam.fadeOut(3000);
+            this.cam.once('camerafadeoutcomplete', function(){
+                this.scene.scene.start('game_over', { finalScore: finalScore });
+            });
+
+            // set the mood value back up, to stop this firing repeatedly
+            this.hud.moodVal = 50;
+        }
+
         // debug
         if (game.config.physics.arcade.debug) {
             // show pc's X position

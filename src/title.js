@@ -27,11 +27,15 @@ class Title extends Phaser.Scene {
             loadingBar.clear();
         })
 
-        this.load.audio("title", "./assets/sounds/title.wav") //beepbox.co/#8n31s5k4l00e0dt2mm0a7g0ej07i0r1o3210T1v1L4uecq1d7fay0z1C3c0AcF8B7VaQ0001PffffE0000T6v3L4u74q1d1f8y2z1C1c0W42T0v1L4u14q1d6f9y2z1C0w5c1h2T4v1L4uf0q1z6666ji8k8k3jSBKSJJAArriiiiii07JCABrzrrrrrrr00YrkqHrsrrrrjr005zrAqzrjzrrqr1jRjrqGGrrzsrsA099ijrABJJJIAzrrtirqrqjqixzsrAjrqjiqaqqysttAJqjikikrizrHtBJJAzArzrIsRCITKSS099ijrAJS____Qg99habbCAYrDzh00b00810xd3gM020w404h4g4x8i4x8i4w0x4h4h4h4gp222GryvjQahHuzYunHGuKOZ2pCIrhYunNX3qOKR_jBNfjq-bpL5-1czDZAxbRsLnHWcCaCzO2idtjhZvb5jhVb95YLOX5PrjLMarQvnITE_0g4LjhD4s2sTghQQqa3nEerEE0
+        this.load.audio("title", "./assets/sounds/title.wav"); //beepbox.co/#8n31s5k4l00e0dt2mm0a7g0ej07i0r1o3210T1v1L4uecq1d7fay0z1C3c0AcF8B7VaQ0001PffffE0000T6v3L4u74q1d1f8y2z1C1c0W42T0v1L4u14q1d6f9y2z1C0w5c1h2T4v1L4uf0q1z6666ji8k8k3jSBKSJJAArriiiiii07JCABrzrrrrrrr00YrkqHrsrrrrjr005zrAqzrjzrrqr1jRjrqGGrrzsrsA099ijrABJJJIAzrrtirqrqjqixzsrAjrqjiqaqqysttAJqjikikrizrHtBJJAzArzrIsRCITKSS099ijrAJS____Qg99habbCAYrDzh00b00810xd3gM020w404h4g4x8i4x8i4w0x4h4h4h4gp222GryvjQahHuzYunHGuKOZ2pCIrhYunNX3qOKR_jBNfjq-bpL5-1czDZAxbRsLnHWcCaCzO2idtjhZvb5jhVb95YLOX5PrjLMarQvnITE_0g4LjhD4s2sTghQQqa3nEerEE0
         this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
     }
 
     create() {
+        // kill the game over scene, and reset the time passed, in case this was a restart
+        this.scene.stop("game_over");
+        game.registry.set('hoursPassed', 0);
+;
         var music = this.sound.add("title", { loop: true });
         music.play();
         this.titleMusic = music;
