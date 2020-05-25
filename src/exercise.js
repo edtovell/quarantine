@@ -24,6 +24,8 @@ class Exercise extends Phaser.Scene {
 
         this.load.spritesheet("pc_e", "./assets/pc/pc_exercise_spritesheet.png", { frameWidth: 47, frameHeight: 74, spacing: 2, });
         this.load.spritesheet("joggerA", "./assets/npcs/jogger_A_spritesheet.png", { frameWidth: 49, frameHeight: 99, spacing: 2, });
+        this.load.spritesheet("joggerB", "./assets/npcs/jogger_B_spritesheet.png", { frameWidth: 49, frameHeight: 99, spacing: 2, });
+        this.load.spritesheet("joggerC", "./assets/npcs/jogger_C_spritesheet.png", { frameWidth: 49, frameHeight: 99, spacing: 2, });
         this.load.image("park", "./assets/tiles/park.png");
         this.load.image("grass", "./assets/tiles/grass.png");
 
@@ -210,7 +212,7 @@ class Exercise extends Phaser.Scene {
     }
 
     spawnJogger() {
-        var modelPool = ["joggerA"];
+        var modelPool = ["joggerA", "joggerB", "joggerC"];
         var model = Phaser.Math.RND.pick(modelPool);
         var jogger = this.physics.add.sprite(this.cam.midPoint.x, -200, model, 0);
         jogger.setScale(2.5);
