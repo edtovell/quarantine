@@ -21,17 +21,21 @@ class Supermarket extends Phaser.Scene {
 
         this.load.bitmapFont('pixeled', './assets/fonts/pixeled/pixeled.png', './assets/fonts/pixeled/pixeled.fnt');
         this.load.spritesheet("pc_sp", "./assets/pc/pc_sp_spritesheet.png", { frameWidth: 40, frameHeight: 40, spacing: 2, });
-        this.load.spritesheet("granny", "./assets/npcs/granny_spritesheet.png", {frameWidth: 40, frameHeight: 40, spacing: 2});
+        this.load.spritesheet("shopperA", "./assets/npcs/shopper_A_spritesheet.png", {frameWidth: 40, frameHeight: 40, spacing: 2});
+        this.load.spritesheet("shopperB", "./assets/npcs/shopper_B_spritesheet.png", {frameWidth: 40, frameHeight: 40, spacing: 2});
+        this.load.spritesheet("shopperC", "./assets/npcs/shopper_C_spritesheet.png", {frameWidth: 40, frameHeight: 40, spacing: 2});
         this.load.tilemapTiledJSON("map", "./assets/tiles/supermarket/supermarket.json");
         this.load.image("tiles", "./assets/tiles/supermarket/supermarket_tileset.png");
-        this.load.spritesheet("checkout", "./assets/tiles/supermarket/checkout.png", { frameWidth: 40, frameHeight: 80, spacing: 1 });
-        this.load.image("sign_bogroll", "/assets/tiles/supermarket/sign_bogroll.png");
-        this.load.image("sign_milk", "/assets/tiles/supermarket/sign_milk.png");
-        this.load.image("sign_bread", "/assets/tiles/supermarket/sign_bread.png");
-        this.load.image("bogroll", "/assets/tiles/supermarket/bogroll.png");
-        this.load.image("milk", "/assets/tiles/supermarket/milk.piko");
-        this.load.image("bread", "/assets/tiles/supermarket/bread.png");
-        this.load.image("exit", "/assets/tiles/supermarket/door.png");
+        this.load.spritesheet("checkoutA", "./assets/tiles/supermarket/checkout_A.png", { frameWidth: 40, frameHeight: 80, spacing: 1 });
+        this.load.spritesheet("checkoutB", "./assets/tiles/supermarket/checkout_B.png", { frameWidth: 40, frameHeight: 80, spacing: 1 });
+        this.load.spritesheet("checkoutC", "./assets/tiles/supermarket/checkout_C.png", { frameWidth: 40, frameHeight: 80, spacing: 1 });
+        this.load.image("sign_bogroll", "./assets/tiles/supermarket/sign_bogroll.png");
+        this.load.image("sign_milk", "./assets/tiles/supermarket/sign_milk.png");
+        this.load.image("sign_bread", "./assets/tiles/supermarket/sign_bread.png");
+        this.load.image("bogroll", "./assets/tiles/supermarket/bogroll.png");
+        this.load.image("milk", "./assets/tiles/supermarket/milk.piko");
+        this.load.image("bread", "./assets/tiles/supermarket/bread.png");
+        this.load.image("exit", "./assets/tiles/supermarket/door.png");
         this.load.audio("supermarket", "./assets/sounds/supermarket.wav");
         this.load.audio("collect", "./assets/sounds/collectItem.wav");
         this.load.audio("kaching", "./assets/sounds/kaching.wav");
@@ -107,8 +111,10 @@ class Supermarket extends Phaser.Scene {
 
         // place checkouts
         var checkouts = this.physics.add.staticGroup();
+        var modelPool = ['checkoutA', 'checkoutB', 'checkoutC'];
         for (let i = 16; i < 36; i = i + 3) {
-            let checkout = this.physics.add.sprite(coord(i) + 10, coord(26) + 10, 'checkout', 0);
+            let model = Phaser.Math.RND.pick(modelPool);
+            let checkout = this.physics.add.sprite(coord(i) + 10, coord(26) + 10, model, 0);
             checkout.body.setSize(38, 78);
             checkout.body.setImmovable(true);
             this.physics.add.collider(pc, checkout);
@@ -116,7 +122,7 @@ class Supermarket extends Phaser.Scene {
             let animName = "checkout_" + i.toString();
             this.anims.create({
                 key: animName,
-                frames: this.anims.generateFrameNumbers("checkout", { frames: [0, 1] }),
+                frames: this.anims.generateFrameNumbers(model, { frames: [0, 1] }),
                 frameRate: 5,
                 repeat: -1,
             });
@@ -353,7 +359,7 @@ class Supermarket extends Phaser.Scene {
         )
         myPath.lineTo(x, y);
 
-        var modelPool = ['granny'];
+        var modelPool = ['shopperA', 'shopperB', 'shopperC'];
         var model = Phaser.Math.RND.pick(modelPool);
         var shopper = this.add.follower(myPath, x, y, model);
         shopper.setScale(0.5);
