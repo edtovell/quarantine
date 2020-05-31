@@ -136,6 +136,8 @@ class Home extends Phaser.Scene {
         this.userControlsActive = false;
         this.setControlsActive(true);
 
+        this.gameOver = false;
+
         dbglog("created home scene");
     }
 
@@ -209,7 +211,8 @@ class Home extends Phaser.Scene {
         }
 
         // If your mood drops to 0, game over
-        if (this.hud.moodVal < 1){
+        if (this.hud.moodVal < 1 && !this.gameOver){
+            this.gameOver = true;
             this.userControlsActive = false;
             var finalScore = this.hud.hoursPassed;
             this.scene.stop("interaction");
@@ -219,9 +222,6 @@ class Home extends Phaser.Scene {
             this.cam.once('camerafadeoutcomplete', function(){
                 this.scene.scene.start('game_over', { finalScore: finalScore });
             });
-
-            // set the mood value back up, to stop this firing repeatedly
-            this.hud.moodVal = 50;
         }
 
         // debug

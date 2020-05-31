@@ -32,10 +32,12 @@ class Title extends Phaser.Scene {
     }
 
     create() {
-        // kill the game over scene, and reset the time passed, in case this was a restart
+        // kill the game over scene, and reset the history, in case this was a restart
         this.scene.stop("game_over");
         game.registry.set('hoursPassed', 0);
-;
+        game.registry.set('moodVal', 0);
+        game.registry.set('history', new Array());
+
         var music = this.sound.add("title", { loop: true });
         music.play();
         this.titleMusic = music;

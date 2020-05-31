@@ -61,7 +61,6 @@ class HomeHUD extends Phaser.Scene {
     drawMoodBar(diff, suppressSFX) {
         if (diff && !suppressSFX) {
             if (diff > 0) {
-
                 this.sound.play("collect");
             } else if (diff < 0) {
                 this.sound.play("boop");
