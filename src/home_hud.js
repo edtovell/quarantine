@@ -23,6 +23,9 @@ class HomeHUD extends Phaser.Scene {
         var moodText = this.add.bitmapText(cam.midPoint.x, 10, 'pixeled', 'mood', 20);
         this.moodText = moodText;
 
+        this.toolTip = this.add.bitmapText(0, 0, 'pixeled', '', 20);
+        this.toolTip.setPosition(cam.midPoint.x, cam.displayHeight - 35);
+
         // This is the first run, so use this.firstRun to make sure all graphics get drawn
         this.firstRun = true;
         this.drawMoodBar(0);
@@ -56,11 +59,11 @@ class HomeHUD extends Phaser.Scene {
     }
 
     drawMoodBar(diff, suppressSFX) {
-        if(diff && !suppressSFX){
-            if(diff > 0){
+        if (diff && !suppressSFX) {
+            if (diff > 0) {
 
                 this.sound.play("collect");
-            } else if(diff < 0){
+            } else if (diff < 0) {
                 this.sound.play("boop");
             }
         }
@@ -143,10 +146,6 @@ class HomeHUD extends Phaser.Scene {
     drawToolTip(x) {
         // show the hint when near interactable objects
         var cam = this.cameras.main;
-        if (this.firstRun) {
-            this.toolTip = this.add.bitmapText(0, 0, 'pixeled', '', 20);
-            this.toolTip.setPosition(cam.midPoint.x, cam.displayHeight - 35);
-        }
         var obj = this.getToolTip(x);
         this.toolTip.setText(obj.text);
         this.toolTip.setX(cam.midPoint.x - (this.toolTip.width / 2));
