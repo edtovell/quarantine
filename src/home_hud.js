@@ -139,7 +139,7 @@ class HomeHUD extends Phaser.Scene {
                 return obj;
             }
         }
-        return "";
+        return {text: "", key: ""};
     }
 
     drawToolTip(x) {
