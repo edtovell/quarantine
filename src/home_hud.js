@@ -146,8 +146,10 @@ class HomeHUD extends Phaser.Scene {
         // show the hint when near interactable objects
         var cam = this.cameras.main;
         var obj = this.getToolTip(x);
-        this.toolTip.setText(obj.text);
-        this.toolTip.setX(cam.midPoint.x - (this.toolTip.width / 2));
+        if(this.toolTip){
+            this.toolTip.setText(obj.text);
+            this.toolTip.setX(cam.midPoint.x - (this.toolTip.width / 2));
+        }
         return obj.key;
     }
 }
